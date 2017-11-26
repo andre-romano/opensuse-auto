@@ -1,0 +1,5 @@
+1) Run install.sh
+
+OPTIONAL:
+
+2) Run set_autostart.sh to set couch potato to autostart with your user login

@@ -1,0 +1,58 @@
+#!/bin/bash
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+# if it's not root, exit!
+[ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
+
+MOUNTPOINT="/run/media/root"
+
+show_copywrite() {
+    echo -e "\n$1"
+    echo -e "Copyright © 2015 Andre Luiz Romano Madureira.  License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>."
+    echo -e "This is free software: you are free to change and redistribute it.  There is NO WARRANTY, to the extent permitted by law\n"
+}
+
+show_help() {
+    show_copywrite "ISO9660 File Mounter"
+    echo -e "\n\tUsage: isomount file\n"
+    echo -e "\tOPTION\tDESCRIPTION"
+    echo -e "\tfile\tThe file that you want to mount/open"
+    exit 0
+}
+
+check_help() {
+    if [ $# -eq 0 ]; then return 0; fi #at least one file is needed
+    for var in "$@"; do
+        HELP_REQUEST="true"
+        for option in "$ALL_OPTIONS"; do #check for all options provided
+            if [ "$var" = "$option" ]; then
+                HELP_REQUEST="false"
+                break
+            fi
+        done
+        if [ -e "$var" ]; then HELP_REQUEST="false"; fi #check if all files provided exist
+        if [ "$HELP_REQUEST" = "true" ]; then return 0; fi
+    done
+    return 1
+}
+
+#CHECK FOR INCORRECT ARGUMENTS OR HELP REQUEST
+check_help "$@" && show_help
+
+raise_error() {
+    echo -e "\nISO Image Mount/Open - FAILED"
+    echo -e "$1"
+    if [ -n "$2" ]; then rm -d "$2"; fi 2> /dev/null #remove empty directory
+    exit 1
+}
+
+if ! isovfy -i "$1" > /dev/null; then
+    raise_error "ISO image provided is corrupted or could not be opened!"
+fi
+FILENAME="$(basename "$1" .iso)"
+MOUNTPOINT="$MOUNTPOINT"/"$FILENAME"
+mkdir -p "$MOUNTPOINT"
+if [ ! -d "$MOUNTPOINT" ]; then
+    raise_error "Could not create temporary path to open the iso file in $MOUNTPOINT!"
+fi
+mount -o loop -t iso9660 "$1" "$MOUNTPOINT" ||
+(echo -e "\nERROR: Could mount/open the file." && exit 1)

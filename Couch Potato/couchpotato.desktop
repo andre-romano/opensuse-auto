@@ -1,0 +1,22 @@
+[Desktop Entry]
+Exec=couchpotato
+Icon=couchpotato
+Categories=AudioVideo;
+Comment=Download automatically video files from BitTorrent/Usenet networks
+Name=Couch Potato
+GenericName=Couch Potato
+NoDisplay=false
+StartupNotify=true
+Encoding=UTF-8
+Terminal=false
+Type=Application
+X-DBUS-StartupType=unique
+# X-KDE-autostart-after=panel
+
+#X-DBUS-ServiceName=
+#X-DBUS-StartupType=
+
+#SubstituteEUID AND RUID
+
+#X-KDE-SubstituteUID=false
+#X-KDE-Username=

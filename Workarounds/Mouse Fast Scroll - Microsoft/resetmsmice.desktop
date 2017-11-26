@@ -1,0 +1,15 @@
+[Desktop Entry]
+Exec=resetmsmice &
+Icon=system-run
+Name=resetmsmice
+Terminal=false
+Type=Application
+X-DBUS-StartupType=unique
+
+#X-DBUS-ServiceName=
+#X-DBUS-StartupType=
+
+#SubstituteEUID AND RUID
+
+#X-KDE-SubstituteUID=false
+#X-KDE-Username=

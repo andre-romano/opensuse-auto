@@ -1,0 +1,11 @@
+[Unit]
+Description = Unlock Bluetooth Devices on Boot
+Requires = bluetooth.service
+After = bluetooth.service
+
+[Service]
+Type = oneshot 
+ExecStart = /opt/bluetooth_unlock.sh
+
+[Install]
+WantedBy = multi-user.target
