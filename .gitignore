@@ -12,3 +12,5 @@ Sublime Text*
 # avoid other not useful files
 KWALLET integration*
 node_modules*
+installed.repositories
+installed.packages
