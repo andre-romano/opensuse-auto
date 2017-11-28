@@ -46,7 +46,23 @@ sudo ./name_of_repository_to_add.sh
 
 ### luks - Managing Cryptographic Files within Linux
 
-These scripts are used to open, close and create LUKS files. To be able to use them, you will need to run the command below to install them in your system:
+> **DESCRIPTION:**  
+>
+> LUKS is an OpenSource, platform-independent standard that allows you to safely store files in your computer, by using advanced cryptography algorithms. It was built to be really fast, and it works really well in Linux.  
+> LUKS works by storing a special header in the partition of your permanent storage device (HDD, SSD, etc) to configure it's parameters. For more information about LUKS, check the [Wikipedia article](https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup) and the [Arch Wiki](https://wiki.archlinux.org/index.php/Dm-crypt).  
+>As LUKS is a complex system that requires a bunch of commands to work properly, scripts were created to make life easier :D . They automate the tasks required to create and use LUKS inside a file that works as a container. In other words, this file works as a physical device connected to your computer, that uses cryptography to protect it's data.  
+> The script does all the hard work for you:  
+> - Create the file in your permanent storage device  
+> - Set the file to operate as a LUKS device
+> - Map this file into a virtual device
+> - Mount this virtual device with the user provided password.  
+
+> **NOTE:**  
+>  
+> - This script analyses the file to detect any data corruption before mounting.  
+> - **This script DOES NOT STORE ANY PASSWORD. It means that if you lose your password, you'll lose all the data that is stored inside the file container.**
+
+These scripts are used to open, close and create LUKS container files.  To be able to use them, you will need to run the command below to install them in your system:
 
 ```Shell
 cd luks
@@ -122,7 +138,7 @@ This path contain scripts that can be useful in different scenarios. They are us
 | :------- | :---- |
 | drivers.sh | Shows a list of the drivers currently being used in your system |
 | help.sh | Auxiliary used to display help and copywrite statements in this repository. |
-| list_installed.sh | Creates 2 files (installed.packages and installed.repositories) that show, respectively, the installed packages and repositories in the system. |
+| list_installed.sh | Dumps the installed packages and repositories of the system into two files: _installed.packages_, _installed.repositories_. |
 | suse_version.sh | Script that returns the openSUSE version of the system. Used throughout the repository for OS version probing. |
 
 --------
@@ -141,7 +157,7 @@ When executed, these scripts will do the following:
 
 > **Notes:**
 >
-> - The updates of these softwares will be maintained by the repository owner.
+> - The packages of these softwares are maintained by their respective repository owners. Any problem related to the softwares should be reported to the respective repository owners.
 
 | Software | Description |
 | :------- | :---- |
@@ -163,9 +179,9 @@ Some softwares don't have an **openSUSE**&trade; repository already setup. As a 
 - If the software was not installed, then install it and perform the configuration steps
 
 > **Files in These Scripts**: <br>
-> 1. **DESKTOP** file (to install the required links into the Graphical Desktop Interface) <i>**(some softwares might not have this file. In this cases, the .RPM package downloaded from the vendor's website already does this for us)**</i><br>
-> 2. **update.sh** bash script (keep the software updated, and if the software is not present in the system, install and configure it)<br>
-> 3. **install.sh** bash script (to install the **DESKTOP** file, and also schedule the update file with **cron** to run once per week)
+> 1. **DESKTOP** file (to install the required links into the Graphical Desktop Interface) <i>**(some softwares might not have this file in their path inside this repository. In this cases, the vendor's have created a .RPM package, that already has this file and handles most of the hard work of installing the software for us)**</i><br>
+> 2. **update.sh** bash script (this script keep the software updated, and if the software is not present in the system, it installs and configures it)<br>
+> 3. **install.sh** bash script (it installs the **DESKTOP** file, if needed, and also schedule the update file with **cron** to run once per week, keeping the software updated)
 
 | Software | Description |
 | ------- | ------ |
@@ -177,11 +193,11 @@ Some softwares don't have an **openSUSE**&trade; repository already setup. As a 
 Workarounds
 -----------------
 
-Linux is good, but as many OS's out there, it has it's own problems. In that regard, scripts have been created to solve these issues with minimal human intervention.
+Linux is good, but as many OS's out there, it has it's own problems. To solve those issues, scripts have been created to automate these fixes.
 
 > **Note:**  
 >
-> - Although these scripts work well and fix the issues, they're **workarounds**. Therefore, they're far from being <i>perfect solutions</i>. They're provided AS-IS with NO WARRANTY whatsoever.
+> - Although these scripts work well, they're **workarounds**. Therefore, they're far from being <i>perfect solutions</i>. They're provided AS-IS with NO WARRANTY whatsoever.
 
 | Name | Description |
 | ------- | ------ |
