@@ -2,121 +2,204 @@ openSUSE-Auto
 ===================
 
 
-This is a **GitHub** repository that stores scripts to automate **openSUSE**&trade;<sup id=opensuse_back>[1](#opensuse)</sup> Linux distribution in many ways. They allow installation and configuration of software, as well as solve common **openSUSE** &trade; (or Linux) issues.
+This is repository stores scripts to automate **openSUSE**&trade;<sup id=opensuse_back>[1](#opensuse)</sup> Linux distribution in many ways. They allow installation and configuration of software, as well as solve common **openSUSE** &trade; or Linux issues.
 
 Special Scripts
 ---------------
 
-These scripts have each one of them a very specific and individual purpose that differ from the others. Please check them carefully below.
+These scripts have very specific and individual purposes that differ from the each other. Please check them carefully below.
 
-### Initial_Config - System Initial Configuration
+### Configure Distro - System Initial Configuration
 
-These scripts are used to install all the required drivers, codecs and some frequently software inside your **openSUSE&trade;**. The best way to do this is to run the command from within this directory:
-
-```Shell
-cd 'Initial_Config'
-sudo ./install_dist.sh
-```
-
-### Custom bash
-
-This script installs a custom **.bashrc** file that provides some cool functionality to **ALL USERS prompts**. To use it run the code:
+These scripts are used to install all the required drivers, codecs and some frequently software inside your **openSUSE&trade;**. The best way to do this is to run the following command from the repository root directory:
 
 ```Shell
-cd 'Custom Bash'
 sudo ./install.sh
 ```
 
-### LUKS - Managing Cryptographic Files within Linux
 
-These scripts are used to open, close and create LUKS files. To be able to use them, will need to run the command below to install them in your system:
+### Repositories - Custom Useful Repositories
+
+These scripts are used to install new repositories inside your **openSUSE&trade;**. To install a repository, you only need to cd to the Repositories directory, and run the repository script:
+
+```Shell
+cd Repositories
+sudo ./name_of_repository_to_add.sh
+```
+
+> **CAUTION:**  
+>  
+> Be extra careful with the repositories you add in your system, as well as their priorities. **A bad repository with a high priority might harm your system really bad (to the point of needing a full reinstall of the OS). As a rule of thumb, only install repositories that you TRUST, as you NEED them**. By default, only a subfraction of the repositories available in the _Repositories_ directory is installed in the system by default when you issue the system configuration command _"sudo ./install.sh"_. Check _"Configure Distro/install.sh"_ for more info.  
+
+> **CONSISTENCY:**  
+>  
+> Also, keep in mind that if you're using a set of softwares from a repository, only use this repository for these types of software (keep the consistency of your system at all cost).  
+> __**Eg:**__ if you install _ffmpeg_ from _Packman_ repository, all multimedia codecs (and related software and tools) you install / update thereafter should come from _Packman_ repository **ONLY**. Failing to do so may cause system instability, or software malfunction.  
+
+>**KERNEL:**  
+>  
+> **Do not mess with your kernel unless you know what you're doing.** The "Repositories" path contain the latest kernel repository (kernel.sh) tested and patched by the **openSUSE&trade;** community. This DOES NOT mean you should update your kernel. Keep in mind that newer kernels might have unknown bugs and issues, as well as stability problems. **As a rule of thumb, only upgrade / compile your kernel if:**  
+> - Hardware performance issues
+> - Hardware not recognized or malfunctioning  
+> - You require / use a bleeding edge filesystem (BTRFS, ZFS, etc)  
+> - A security breach has been found and needs to be patched
+
+### luks - Managing Cryptographic Files within Linux
+
+These scripts are used to open, close and create LUKS files. To be able to use them, you will need to run the command below to install them in your system:
 
 ```Shell
 cd luks
 sudo ./install.sh
 ```
 
- > **Note:**
- > After executing this command, you'll have 3 new scripts installed inside your system. You'll have 'lopen', 'lclose' and 'lcreate'. As you might imagine, they all do what their names imply. For more info, use the options --help with them.
+> **Note:**  
+>  
+> After executing this command, you'll have 3 new scripts installed inside your system:
+> - _lopen_  
+> - _lclose_  
+> - _lcreate_  
 
-### Open All in Tabs
+> They open, close and create LUKS file containers respectively. For more info, use the argument --help with them.
 
-This script allows you to open many URL's with one single command within bash. To use it you just need to type the following from within it's folder:
+### Tar7Z - Allow 7zip as a compression option for .tar files
 
+The script tar7z allows you to use 7zip as a compression method in .tar files. To do so, you will need to install the script in your system:
+
+```Shell
+cd Tar7Z
+sudo ./install.sh
 ```
-web-open.sh file
+
+> **Note:**  
+>  
+> After executing this command, you'll have 1 new script installed inside your system:
+> - _tar7z_  
+
+> For more info, use the argument --help.
+
+### pdf - Script that compresses PDFs with GhostScript
+
+This script compresses PDFs into smaller ones, appending the suffix "_compress.pdf" to them. To do so, this script requires the binary "gs" (GhostScript) that it can install automatically (using zypper). All you have to do is issue the following commands:
+
+```Shell
+cd pdf
+sudo ./install.sh
 ```
 
-> **Note:**
-> Where there is **file** replace with the file that has the URL's that you want to open. By default it will try to open them with the default web browser. Use the option **--help** to see what other functionality this script has.
+> **Note:**  
+>  
+> After executing this command, you'll have 1 new script installed inside your system:
+> - _pdfcompress_  
 
-> You may install this script inside your system using the command:
-> ```Shell
-> sudo install.sh
-> ```
-> When the script is installed, you don't need to use it with the .SH extension. Just type **web-open** and it will work.
+> For more info, use the argument --help.
+
+### isomount - Script that makes the mount of CDs easier
+
+This script mounts CDs (without requiring you to type all that mount syntax yourself). To install this script, run the following:
+
+```Shell
+cd isomount
+sudo ./install.sh
+```
+
+> **Note:**  
+>  
+> After executing this command, you'll have 2 new scripts installed inside your system:
+> - _isomount_  
+> - _isoumount_  
+
+> They mount and unmount the CDs respectively. For more info, use the argument --help with them.  
+
+--------
+
+Utilities
+---------------
+
+This path contain scripts that can be useful in different scenarios. They are used throughout this repository as auxiliary scripts to simplify common tasks. Check the description of them below (for more info, type _--help_ with the script):
+
+| Script | Description |
+| :------- | :---- |
+| drivers.sh | Shows a list of the drivers currently being used in your system |
+| help.sh | Auxiliary used to display help and copywrite statements in this repository. |
+| list_installed.sh | Creates 2 files (installed.packages and installed.repositories) that show, respectively, the installed packages and repositories in the system. |
+| suse_version.sh | Script that returns the openSUSE version of the system. Used throughout the repository for OS version probing. |
 
 --------
 
 Installation / Configuration of New Software
 ---------------
 
-These scripts allow the admin to rapidly install and/or configure (with minimal to no human intervention) any software that is listed here.
+These scripts allow you to rapidly install and / or configure (with minimal to no human intervention) any software that is listed here.
 
 ### openSUSE&trade; Scripts
-These scripts need some openSUSE repositories to work properly. They will issue a sequence of commands to correctly add the required repositories, install the requested softwares and issue the required commands to properly configure them.
+These scripts are developed to work with openSUSE OS's only. With some changes they may work fine in other OS's as well.  
+When executed, these scripts will do the following:
+- Add the required repositories (when / as they're needed)  
+- Install the requested softwares and their dependencies  
+- Issue commands to properly configure the softwares installed  
 
 > **Notes:**
 >
-> - The vast majority of the scripts are contained inside this category for better maintainability/stability.
-> - The updates of these softwares will be maintained by the repository owner. These updates will executed by  **openSUSE**&trade;. At least **zypper**&trade; <sup id=zypper_back>[2](#zypper)</sup> and **rpm**&trade;<sup id=rpm_back>[3](#rpm)</sup> softwares are going to be used.
-> - Depending on your Graphical Desktop Interface (**GNOME**&trade;, **KDE**&trade;, or others) other software may be used to download and apply the required patches and updates released by the repository owner.
+> - The updates of these softwares will be maintained by the repository owner.
 
 | Software | Description |
 | :------- | :---- |
-| <abbr title="Dynamic Kernel Module System">DKMS</abbr> | Used to compile and keep kernel modules within the kernel versions installed in the system |
-| Fritzing | Electronic Design Automation software for OpenSource Hardware Schematic and PCB Design |
+| Configure Distro | Installation of graphics drivers, codecs, and some commonly used softwares that I consider to be essential for the best user experience with openSUSE |
+| <abbr title="Dynamic Kernel Module System">DKMS</abbr> | Used to compile kernel modules automatically for new installed kernels (used by NVIDIA, VirtualBox and others) |
+| Fritzing | CAD software for prototyping eletronic projects |
 | Google Chrome | Google's Closed-source Web Browser |
-| Initial_Config | Installation of graphics drivers, codecs, and some common use software that I consider to be essential for the best user experience with openSUSE |
+| GRUB2 | Linux GRUB2 Boot loader installer script (it does a re-installation of the boot loader back into the system) |
+| PyCharm | Python IDE |
+| SMPlayer | Video player (configured to avoid common memory leaks that it could cause) |
+| Unison | Syncing software that allows you to sync in both directions REALLY fast |
 | VirtualBox | Oracle's Hardware Virtualization Technology |
-| Workrave | Avoid RSI (repetitive strain injury), that can result in hurting your spine, hands, etc |
+| VLC | Video player (configured to avoid common memory leaks that it could cause) |
 
 ### General Scripts
-Some softwares don't have an **openSUSE**&trade; repository already setup. In order to install and keep these softwares updates, these scripts parse the required information from the software vendor's website. It then detects if the software is installed and needs an update, or if the software was not installed and needs to be installed.
+Some softwares don't have an **openSUSE**&trade; repository already setup. As a workaround, scripts have been created to automate the installation procedure. They execute the following:
+- Parse the required information from the software vendor's website
+- Detects if the software is installed and needs an update
+- If the software was not installed, then install it and perform the configuration steps
 
 > **Files in These Scripts**: <br>
-> 1. **DESKTOP** file (to install the required links into the Graphical Desktop Interface) <i>**(some softwares might not have this file, the .RPM downloaded from their source website already does this for us)**</i><br>
-> 2. **update.sh** bash script (keep the software updated, and if software is not present in the system, install it)<br>
-> 3. **install.sh** bash script (to install the **DESKTOP** file, and also schedule the update file with **anacron** to run once per week)
+> 1. **DESKTOP** file (to install the required links into the Graphical Desktop Interface) <i>**(some softwares might not have this file. In this cases, the .RPM package downloaded from the vendor's website already does this for us)**</i><br>
+> 2. **update.sh** bash script (keep the software updated, and if the software is not present in the system, install and configure it)<br>
+> 3. **install.sh** bash script (to install the **DESKTOP** file, and also schedule the update file with **cron** to run once per week)
 
 | Software | Description |
 | ------- | ------ |
 | TeamViewer | A Remote Access software that can bypass NAT and port forwarding. It can even configure itself inside the system's default firewall. |
-| <abbr title="Universal Media Server">UMS</abbr> | - uPnp Streaming to Multimedia devices in the same Network Subnet|
+| <abbr title="Universal Media Server">UMS</abbr> | UPNP / DLNA Streaming  server that can do on-the-fly transcoding and motion frame interpolation |
 
 <hr>
 
 Workarounds
 -----------------
 
-There are some other scripts that solve* some common problems that you might encounter when using Linux-based OS's.
+Linux is good, but as many OS's out there, it has it's own problems. In that regard, scripts have been created to solve these issues with minimal human intervention.
 
-> <b>*Note:</b>
+> **Note:**  
 >
-> - Although these scripts work well and fix the issues, they're **workarounds**. Therefore, they're far from being <i>perfect solutions</i>.
+> - Although these scripts work well and fix the issues, they're **workarounds**. Therefore, they're far from being <i>perfect solutions</i>. They're provided AS-IS with NO WARRANTY whatsoever.
 
 | Name | Description |
 | ------- | ------ |
 | Mouse Fast Scroll - Microsoft | Fixes the fast scroll that happens with the Microsoft's driver for their Optical (Wire or Wireless) Mouses |
 | [NVIDIA Optimus&trade;][optimus] | Install Bumblebee software to enable fast switch between Onboard and NVIDIA&trade; GPU's. Very used for Laptops to spare energy when the robust GPU is not needed. Before using this feature, please check if your card is supported [here](http://www.geforce.com/hardware/technology/optimus/supported-gpus). |
-| Suspend | Avoid suspension/hibernation problems related to either no being able to suspend/hibernate or not being able to wake up from these energy modes. |
+| Suspend | Avoid suspension / hibernation problems related to either not being able to suspend / hibernate or not being able to wake up from these energy modes. **This is a common issue with systems that have at least one NVIDIA GPU.** |
+| Auto Update System | Updates the system periodically and automatically, with human intervention only required for certain softwares (Kernel, and some system low level packages) |
+| Block Touchscreen | Blocks the touchscreen driver permanently |
+| Bluetooth RFKILL Unlock | Enables bluetooth driver by unlocking the RFKILL functionality. Some motherboards have this issue, but it seems this problem has been fixed in Kernel >= 4 . |
+| VPN Kernel Allow | Enables PPTP VPN functionality on Kernels >=3.4 during boot (it does some _modprobe's_ on boot time). |
+| WiFi Performance | Improves WiFi Performance by applying some changes to the system WLAN drivers on boot. |
 
 <hr>
 
 Tested Environment
 -----------------
 
-The scripts provided were tested within a x86_64 machine running openSUSE&trade; Leap 42.2 and the most recent kernel available within the default openSUSE&trade; repositories
+The scripts provided were tested in a x86_64 machine running openSUSE&trade; Leap 42.2 and the most recent kernel available within the default openSUSE&trade; repositories
 
 Footnotes
 ------------------
