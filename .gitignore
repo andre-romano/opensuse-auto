@@ -4,6 +4,8 @@
 bin
 .bins
 ffmpeg_src
+*kate-swp
+*.log
 
 # avoid pdfs and sublime binaries
 **/*.pdf

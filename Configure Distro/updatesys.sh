@@ -24,7 +24,7 @@ ZYPP_FUSE='libfsntfs1 pam_mount cryptsetup ecryptfs-utils exfat-utils fuse-exfat
 # multimedia libraries and software
 ZYPP_MULTIMEDIA='ffmpeg libmp3lame0 libfdk-aac1 libfaac0 mediainfo x264 youtube-dl caffeine smplayer gimp kodi vlc'
 # utilities software
-ZYPP_UTILITIES='seamonkey MozillaFirefox MozillaThunderbird dropbox speedcrunch kate keepassx autossh sshfs autofs pdftk aria2 uget nodejs ghostscript ghostscript-fonts'
+ZYPP_UTILITIES='MozillaFirefox MozillaThunderbird dropbox speedcrunch kate keepassx autossh sshfs autofs pdftk aria2 uget nodejs ghostscript ghostscript-fonts'
 # system software
 ZYPP_SYSTEM='sni-qt sni-qt-32bit pavucontrol pv fcoe-utils open-lldp fetchmsttfonts'
 # join everything in one variable

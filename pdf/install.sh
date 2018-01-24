@@ -27,7 +27,7 @@ show_help() {
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then show_help; fi
 
 # install deps
-zypper -n in -l ghostscript ghostscript-fonts
+sudo zypper -n in -l ghostscript ghostscript-fonts
 
 # check for custom install dir
 if [ $# -gt 0 ]; then INSTALL_DIR=$1; fi
