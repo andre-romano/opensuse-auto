@@ -6,6 +6,9 @@ UTILITIES="$OPENSUSE_AUTO/Utilities"
 AUTOUPDATE_SCRIPT=/etc/cron.monthly/autoupdate.sh
 AUTOUPDATE_LIST=/etc/autoupdate
 
+# THIS SCRIPT SETS THE AUTO UPDATE FOR SPECIFIC PACKAGES OF THE SYSTEM (LIKE USER APPS AND SOME
+# NON CRITICAL PACKAGES)
+
 # if it's not root, exit!
 [ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
 

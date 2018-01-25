@@ -28,12 +28,12 @@ DKMS="$OPENSUSE_AUTO/DKMS/install.sh"
     MOUSE_MSFT="$OPENSUSE_AUTO/Workarounds/Mouse Fast Scroll - Microsoft/install.sh"
     SUSPEND="$OPENSUSE_AUTO/Workarounds/Suspend/install.sh"
     WIFI="$OPENSUSE_AUTO/Workarounds/Wifi Performance/install.sh"
-    VPN="$OPENSUSE_AUTO/Workarounds/VPN Kernel Allow/install.sh"
+    VPN="$OPENSUSE_AUTO/Workarounds/VPN Kernel Allow/install.sh"    
+    HDD="$OPENSUSE_AUTO/Workarounds/Storage Tuning/install.sh"
     # NOT USED ANYMORE
     BUMBLEBEE="$OPENSUSE_AUTO/Workarounds/NVIDIA Optimus/install.sh"
     BLUETOOTH="$OPENSUSE_AUTO/Workarounds/Bluetooth RFKILL Unlock/install.sh"
-    SCREEN="$OPENSUSE_AUTO/Workarounds/Fix Screen Issues (RANDR)/install.sh"
-    AUTOUPDATE="$OPENSUSE_AUTO/Workarounds/Auto Update System/install.sh"
+    SCREEN="$OPENSUSE_AUTO/Workarounds/Fix Screen Issues (RANDR)/install.sh"    
 
 # if it's not root, exit!
 [ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
@@ -130,9 +130,9 @@ install_workarounds(){
     bash "$SWAPPINESS_FILE"
     insert_status "TUNE SWAPPINESS FOR DESKTOP - "
 
-    # activate auto-update script (run updates automagically)
-    bash "$AUTOUPDATE"
-    insert_status "AUTO UPDATE SCRIPT - "
+    # improve hdd / ssd and other storages performance
+    bash "$HDD"
+    insert_status "STORAGE TUNNING SCRIPT - "
 
 #   NOT NEEDED WORKAROUNDS ANYMORE (NEW SYSTEMS / KERNEL CORRECT THIS PROBLEMS)
 
