@@ -6,7 +6,7 @@ create_cron_job(){
     local RUN_SCRIPT=$3
     local CRON_SCHEDULE=$4
     
-    local CRON_ENTRY="$CRON_SCHEDULE bash $RUN_SCRIPT_DIR/$RUN_SCRIPT"    
+    local CRON_ENTRY="$CRON_SCHEDULE bash $RUN_SCRIPT_DIR/$RUN_SCRIPT &"    
     
     sudo su -c "
     cp '$ACTUAL_SCRIPT_DIR/$RUN_SCRIPT' '$RUN_SCRIPT_DIR/' &&
@@ -15,7 +15,7 @@ create_cron_job(){
     # if entry DOES NOT exists in cron, create it
     crontab -l | grep '$CRON_ENTRY' &> /dev/null || (
         echo -e '\tCreating cron entry ...\n'
-        crontab -l | { cat; echo '$CRON_ENTRY'; } | crontab - 
+        crontab -l | { cat; echo '$CRON_ENTRY'; } | sed -e 's/^[ \t#].*//gi' -e '/^\s*$/d' |  crontab - 
     )
     "
     

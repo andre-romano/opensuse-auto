@@ -39,7 +39,9 @@ check_port_connected(){
 
 
 for user in $(get_pulse_user); do
+    sudo su "$user" -c "
     check_port_connected "$(id -u "$user")"
+    "    
 done
 
 
