@@ -5,7 +5,7 @@ UTILITIES="$SCRIPT_DIR/../Utilities"
 [ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
 
 #GENERAL OPTIONS
-INSTALL_DIR="/opt/.bin"
+INSTALL_DIR="/usr/bin"
 
 BINARIES='pdfcompress'
 

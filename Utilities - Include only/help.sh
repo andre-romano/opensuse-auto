@@ -6,6 +6,10 @@ show_copywrite() {
 }
 
 show_help() {
+    local HELP_TITLE="$1"
+    local HELP_DESCRIPTION="$2"
+    local HELP_USAGE="$3"
+    shift; shift; shift
     show_copywrite
     echo -e "\t$HELP_TITLE:" 
     if [ -n "$HELP_DESCRIPTION" ]; then

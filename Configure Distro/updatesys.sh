@@ -2,6 +2,7 @@
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 OPENSUSE_AUTO="$SCRIPT_DIR/.."
 UTILITIES="$OPENSUSE_AUTO/Utilities"
+
 #GET OPENSUSE VERSION
 SUSE_VERSION="$(bash "$UTILITIES/suse_version.sh")"
 
@@ -38,6 +39,7 @@ ZYPP="$ZYPP_SYSTEM $ZYPP_UTILITIES $ZYPP_MULTIMEDIA $ZYPP_FUSE $ZYPP_COMPAC $ZYP
 
 # if it's not root, exit!
 [ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
+
 # update first to allow zypper, yast and bash to work properly
 zypper -n up -l &&
 bash "$LIBDVDCSS" &&

@@ -30,10 +30,8 @@ if [ "$1" = "$NVIDIA_OPTION" ] || [ "$1" = "$AMD_OPTION" ] || [ "$1" = "$OTHER_O
             GRAPHICS_DRIVER="http://geeko.ioda.net/mirror/amd-fglrx/ymp/amd-ati-fglrx64.ymp"
         else
             GRAPHICS_DRIVER="http://geeko.ioda.net/mirror/amd-fglrx/ymp/amd-ati-fglrx.ymp"
-        fi
-        # remove_vdpau
-    else
-        # remove_vdpau
+        fi        
+    else        
         echo -e "GPU Drivers - NO CHANGES NEEDED"
         exit 0
     fi

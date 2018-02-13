@@ -1,6 +1,8 @@
 #!/bin/bash
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-UTILITIES="$SCRIPT_DIR/../Utilities"
+OPENSUSE_AUTO="$SCRIPT_DIR/../.."
+UTILITIES="$OPENSUSE_AUTO/Utilities"
+UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
 
 RESET_MS_MICE="$SCRIPT_DIR/resetmsmice"
 

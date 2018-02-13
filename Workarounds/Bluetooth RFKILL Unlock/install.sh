@@ -1,6 +1,9 @@
 #!/bin/bash
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-UTILITIES="$SCRIPT_DIR/../Utilities"
+OPENSUSE_AUTO="$SCRIPT_DIR/../.."
+UTILITIES="$OPENSUSE_AUTO/Utilities"
+UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
+
 # if it's not root, exit!
 [ "$(INSTALL_SCRIPT)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
 

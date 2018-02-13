@@ -4,9 +4,7 @@
 SOURCE=$1
 DESTINATION=$2
 ACTION=$3
-shift
-shift
-shift
+shift; shift; shift
 OPTIONS_7Z=$@
 
 show_help() {

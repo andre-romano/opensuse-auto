@@ -1,5 +1,11 @@
 #!/bin/bash
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+OPENSUSE_AUTO="$SCRIPT_DIR/../.."
+UTILITIES="$OPENSUSE_AUTO/Utilities"
+UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
+
+. "$UTILITIES_INCLUDE/general_functions.sh"
+. "$UTILITIES_INCLUDE/cron_functions.sh"
 
 # if it's not root, exit!
 [ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
@@ -55,32 +61,9 @@ tuning_filesystems(){
     done
 }
 
-create_cron_job(){
-    RUN_SCRIPT_DIR=$1
-    RUN_SCRIPT=$2
-    CRON_SCHEDULE=$3
-    
-    CRON_ENTRY="$CRON_SCHEDULE bash $RUN_SCRIPT_DIR/$RUN_SCRIPT"    
-    
-    cp "$SCRIPT_DIR/$RUN_SCRIPT" "$RUN_SCRIPT_DIR/" &&
-    chmod +rx "$RUN_SCRIPT_DIR/$RUN_SCRIPT" &&
-            
-    # if entry DOES NOT exists in cron, create it
-    crontab -l | grep "$CRON_ENTRY" &> /dev/null || (
-        echo -e "\tCreating cron entry ...\n"
-        crontab -l | { cat; echo "$CRON_ENTRY"; } | crontab - 
-    )
-    
-    if [ $? -eq 0 ]; then
-        echo -e "\tINSTALLED - cron job $RUN_SCRIPT - SCHEDULE: $CRON_SCHEDULE\n"
-    else
-        exit 1
-    fi
-}
-
 # this makes the filesystems mounted at boot in /etc/fstab to run with no_atime
 tuning_filesystems &&
 
 # THIS SCRIPTS INSTALLS THE FOLLOWING SCRIPT INSIDE THE SYSTEM SO THAT IT RUNS
 # PERIODICALLY WITH CRON (ACCORDING TO THE SCHEDULE BELOW)
-create_cron_job "/etc" "storage_tuning.sh" "@reboot" 
+create_cron_job "$SCRIPT_DIR" "/etc" "storage_tuning.sh" "@reboot" 

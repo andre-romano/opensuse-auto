@@ -1,0 +1,4 @@
+
+The files here placed must be only included in scripts. If these files are run 
+as Scripts whitin Linux they will have no effect, since they're only functions 
+that facilitate common tasks that other scripts require to run !

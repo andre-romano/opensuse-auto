@@ -2,6 +2,13 @@
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 OPENSUSE_AUTO="$SCRIPT_DIR/.."
 UTILITIES="$OPENSUSE_AUTO/Utilities"
+UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
+
+# GET THE GENERAL FUNCTIONS
+. "$UTILITIES_INCLUDE/general_functions.sh"
+
+# load help
+. "$UTILITIES_INCLUDE/help.sh"
 
 PACKMAN="$OPENSUSE_AUTO/Repositories/packman.sh"
 
@@ -11,29 +18,15 @@ PACKMAN="$OPENSUSE_AUTO/Repositories/packman.sh"
 BINARIES='video_encode.sh x265_encode.sh x264_encode.sh vp9_encode.sh mp3_encode.sh'
 
 #GENERAL CONFIG VARIABLES
-INSTALL_DIR="/opt/.bin"
-
-show_copywrite() {
-    echo -e "\n$1"
-    echo -e "Copyright © 2015 Andre Luiz Romano Madureira.  License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>."
-    echo -e "This is free software: you are free to change and redistribute it.  There is NO WARRANTY, to the extent permitted by law\n"
-}
-
-show_help() {
-    show_copywrite "FFMPEG Utilities Installer"
-    echo -e "\n\tUsage: install [directory]\n"
-    exit 0
-}
+INSTALL_DIR="/usr/bin"
 
 #CHECK FOR INCORRECT ARGUMENTS OR HELP REQUEST
-if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then show_help; fi
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then 
+    show_help "FFMPEG Utilities Installer" \
+        "Installs the ffmpeg utility scripts that makes a breeze transcode a video / music into common formats such as MP4 MP3 MKV with codecs H264 H265 VP9 VP8 MP3 AAC" \
+        "install"
+fi
 
-# check for custom install dir
-if [ -n "$1" ]; then INSTALL_DIR=$1; fi
-# CHECK DIR
-mkdir -p "$INSTALL_DIR"
-INSTALL_DIR_OWN=$(ls -ld "$INSTALL_DIR" | tr -s ' ' | cut -d' ' -f3)
-INSTALL_DIR_GRP=$(ls -ld "$INSTALL_DIR" | tr -s ' ' | cut -d' ' -f4)
 # INSTALL FFMPEG
 bash "$PACKMAN" &&
 sudo zypper -n in -l mediainfo ffmpeg libmp3lame0 libfdk-aac1 libfaac0
@@ -45,10 +38,5 @@ for bin in $BINARIES; do
     chown "$INSTALL_DIR_OWN":"$INSTALL_DIR_GRP" "$BIN_NAME" &&
     chmod 755 "$BIN_NAME"
 done
-
-echo -en "Installation of ffmpeg scripts - " && echo -e 'SUCCESSFUL' ||
-(
-    echo -e 'FAILED'
-    exit 1
-)
+display_result "Installation of FFMPEG Utilities"
 

@@ -2,6 +2,7 @@
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 OPENSUSE_AUTO="$SCRIPT_DIR/.."
 UTILITIES="$OPENSUSE_AUTO/Utilities"
+
 #GET OPENSUSE VERSION
 SUSE_VERSION="$(bash "$UTILITIES/suse_version.sh")"
 
@@ -19,8 +20,6 @@ echo -e "Updating system to receive new codecs..."
 #Making sure that all the required packages are resolved before installing codecs
 bash "$PACKMAN" &&
 bash "$LIBDVDCSS" &&
-# zypper -n update -l --download-in-advance &&
-# zypper -n dup -l --download-in-advance &&
 echo "Installing codecs..." &&
 zypper -n dup -l &&
 zypper -n up -l &&

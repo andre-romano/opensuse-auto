@@ -28,6 +28,7 @@ DKMS="$OPENSUSE_AUTO/DKMS/install.sh"
     MOUSE_MSFT="$OPENSUSE_AUTO/Workarounds/Mouse Fast Scroll - Microsoft/install.sh"
     SUSPEND="$OPENSUSE_AUTO/Workarounds/Suspend/install.sh"
     WIFI="$OPENSUSE_AUTO/Workarounds/Wifi Performance/install.sh"
+    PULSE_AUDIO="$OPENSUSE_AUTO/Workarounds/PulseAudio Jack Detection/install.sh"
     VPN="$OPENSUSE_AUTO/Workarounds/VPN Kernel Allow/install.sh"    
     HDD="$OPENSUSE_AUTO/Workarounds/Storage Tuning/install.sh"
     # NOT USED ANYMORE
@@ -59,87 +60,73 @@ LOG_FILE="install.log"
 COUNTER=0
 
 # insert done or failed depending on the return status
-insert_status() {
-  # $1 is the main string to display
-  if [ $? -ne 0 ]; then
-    STATUS="$STATUS[$COUNTER] $1 - FAILED\n"
-  else
-    STATUS="$STATUS[$COUNTER] $1 - DONE\n"
-  fi
-  COUNTER=$(($COUNTER+1))
+run_script() {
+    local SCRIPT_TO_RUN="$1"
+    local MSG="$2"
+
+    bash "$SCRIPT_TO_RUN" &&
+    STATUS="$STATUS[$COUNTER] $2 - DONE\n" || 
+    STATUS="$STATUS[$COUNTER] $2 - FAILED\n"    
+    COUNTER=$(($COUNTER+1))
 }
 
 #install useful tools in system
 install_tools(){
     #install luks tools
-    bash "$LUKS"
-    insert_status "TOOLS\n\tLUKS TOOLS - "
+    run_script "$LUKS" "TOOLS\n\tLUKS TOOLS - "
 
     #install iso mount tools
-    bash "$ISO"
-    insert_status "\tISO TOOLS - "
+    run_script "$ISO" "\tISO TOOLS - "
 
     #install pdf tools
-    bash "$PDF"
-    insert_status "\tPDF TOOLS - "
+    run_script "$PDF" "\tPDF TOOLS - "
 }
 
 #install workarounds
 install_workarounds(){
     # fix suspend problems with some ACPI machines (specifically those with NVIDIA GPU's)
-    bash "$SUSPEND"
-    insert_status "WORKAROUNDS\n\tSUSPEND WORKAROUND - "
+    run_script "$SUSPEND" "WORKAROUNDS\n\tSUSPEND WORKAROUND - "
 
     #disable baboo search to spare cpu and IO (increse PC performance)
-    bash "$DISABLE_SEARCH"
-    insert_status "\tDISABLE BABOO SEARCH - "
+    run_script "$DISABLE_SEARCH" "\tDISABLE BABOO SEARCH - "
 
     # reduce btrfs snapshots
-    bash "$SNAPSHOTS_FILE"
-    insert_status "\tREDUCE SNAPSHOTS - "]
+    run_script "$SNAPSHOTS_FILE" "\tREDUCE SNAPSHOTS - "
 
     #clear tmp files on boot
-    bash "$CLEAR_TMP"
-    insert_status "\tCLEAR TEMPORARY FILES AT BOOT - "
+    run_script "$CLEAR_TMP" "\tCLEAR TEMPORARY FILES AT BOOT - "
 
     #allow vpn pptp with kernel >= 3.18
-    bash "$VPN"
-    insert_status "\tALLOW VPN PPTP CONNECTIONS ON KERNEL >= 3.18 - "
+    run_script "$VPN" "\tALLOW VPN PPTP CONNECTIONS ON KERNEL >= 3.18 - "
 
     #use better default dns to speed internet speed
-    bash "$DNS"
-    insert_status "\tDNS CHANGE TO SAFE AND FAST PROVIDER - "
+    run_script "$DNS" "\tDNS CHANGE TO SAFE AND FAST PROVIDER - "
 
     #fix microsoft mouse driver problems
-    bash "$MOUSE_MSFT"
-    insert_status "\tMICROSOFT MOUSE - "
+    run_script "$MOUSE_MSFT" "\tMICROSOFT MOUSE - "
 
     #fix wifi performance driver problems
-    bash "$WIFI"
-    insert_status "\tWIFI PERFORMANCE - "
+    run_script "$WIFI" "\tWIFI PERFORMANCE - "
+
+    # FIX PULSE AUDIO NOT DETECTING HEADPHONE ON BOOT
+    run_script "$PULSE_AUDIO" "\tPULSE AUDIO AUDIO JACK DECTECTION ON BOOT - "
 
     #install dkms to provide better support to kernel compiled modules (like VirtualBox and NVIDIA)
-    bash "$DKMS"
-    insert_status "\tDKMS INSTALL - "
+    run_script "$DKMS" "\tDKMS INSTALL - "
 
     # avoid multi-screen bugs in KDE and other X11 desktops
-    bash "$SCREEN"
-    insert_status "AVOID SCREEN PROBLEMS (XRANDR) - "
+    run_script "$SCREEN" "AVOID SCREEN PROBLEMS (XRANDR) - "
 
     # activate auto-update script (run updates automagically)
-    bash "$SWAPPINESS_FILE"
-    insert_status "TUNE SWAPPINESS FOR DESKTOP - "
+    run_script "$SWAPPINESS_FILE" "TUNE SWAPPINESS FOR DESKTOP - "
 
     # improve hdd / ssd and other storages performance
-    bash "$HDD"
-    insert_status "STORAGE TUNNING SCRIPT - "
+    run_script "$HDD" "STORAGE TUNNING SCRIPT - "
 
 #   NOT NEEDED WORKAROUNDS ANYMORE (NEW SYSTEMS / KERNEL CORRECT THIS PROBLEMS)
 
-#    bash "$BLUETOOTH"
-#    insert_status "BLUETOOTH RFKILL UNBLOCK - "
-    # bash "$PANELS"
-    # insert_status "AVOID WINDOWS UNDER PANELS - "
+#    run_script "$BLUETOOTH" "BLUETOOTH RFKILL UNBLOCK - "
+#    run_script "$PANELS" "AVOID WINDOWS UNDER PANELS - "
 
 }
 
@@ -156,22 +143,19 @@ install_graphics(){
 #update system
 update_system(){
     #update whole system
-    bash "$UPDATE_FILE"
-    insert_status "SYSTEM UPDATE - "
+    run_script "$UPDATE_FILE" "SYSTEM UPDATE - "
 
     # check if kernel update is really needed
     if [ "$KERNEL_SHOULD_UPDATE" == "y" ]; then
         #update kernel
-        bash "$UPDATE_KERNEL"
-        insert_status "\tUPDATE KERNEL - "
+        run_script "$UPDATE_KERNEL" "\tUPDATE KERNEL - "
     fi
 }
 
 #install codecs
 install_codecs(){
     #install multimedia codecs
-    bash "$CODECS_FILE"
-    insert_status "CODECS INSTALL - "
+    run_script "$CODECS_FILE" "CODECS INSTALL - "
 }
 
 install_tools

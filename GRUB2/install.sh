@@ -1,71 +1,79 @@
 #!/bin/bash
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+OPENSUSE_AUTO="$SCRIPT_DIR/.."
+UTILITIES="$OPENSUSE_AUTO/Utilities"
+UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
+
+# get help
+. "$UTILITIES_INCLUDE/help.sh"
+
 # if it's not root, exit!
 [ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
-int='^[0-9]+$'
 
-PROG_NAME="Grub2 and Initrd Installation/Creation"
+PROG_NAME="GRUB2 and Initrd Installation/Creation"
 
-#OPTIONS
-EFI=-e
-ALL_OPTIONS=$EFI
+ROOT_DIR=$1
+EFI_DEVICE=$2
 
-show_copywrite() {
-    echo -e "\n$1"
-    echo -e "Copyright © 2015 Andre Luiz Romano Madureira.  License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>."
-    echo -e "This is free software: you are free to change and redistribute it.  There is NO WARRANTY, to the extent permitted by law\n"
-}
-
-show_help() {
-    show_copywrite "$PROG_NAME"
-    echo -e "\n\tUsage: install.sh root [options]\n"
-    echo -e "\tOPTION\tDESCRIPTION"
-    echo -e "\troot\tThe root directory of the linux install that you want to generate initrd again"    
-    echo -e "\t$EFI\tUse this option in case your system has an EFI BIOS. If your computer is MSDOS based then don\'t set this option."
-    exit 0
-}
+ROOT_DEVICE=$(mount | grep "$ROOT_DIR" | tr -s ' ' | cut -d' ' -f1)
 
 check_help() {
-    if [ $# -eq 0 ]; then return 0; fi #at least one file is needed
-    for var in "$@"; do
-        HELP_REQUEST="true"
-        for option in "$ALL_OPTIONS"; do #check for all options provided
-            if [ "$var" = "$option" ]; then
-                HELP_REQUEST="false"
-                break
-            fi
-        done
-        if [ -e "$var" ]; then HELP_REQUEST="false"; fi #check if all files provided exist
-        if [ "$HELP_REQUEST" = "true" ]; then return 0; fi
-    done
-    return 1
+    local HELP_REQUEST="true"
+    if [ $# -ne 2 ] || [ "$1" == '-h' ] || [ "$1" == '--help' ]; then 
+        show_help "$PROG_NAME" "Installs the GRUB2 bootloader again in the machine, recreating the INITRD in the process." \
+            "install.sh root [efi_device]" \
+            "root\tThe root directory of the linux install that you want to generate initrd again" \
+            "efi_device\tThe EFI Partition of your computer, if your BIOS is a (U)EFI one. If it's MBR one, then don't use this option, leave it empty!"
+    fi    
 }
 
-ROOT=$1
-EFI=$2
-DEVICE=$(mount | grep "$ROOT " | awk -F \  '{print$1}') 
-#CHECK FOR INCORRECT ARGUMENTS OR HELP REQUEST
-check_help "$@" && show_help
+create_bindings(){
+    echo -e "Creating bindings for new Linux Root \"$ROOT\"..."
+    for i in sys dev proc; do
+        mount -o bind /$i "$ROOT/$i"
+    done
+}
 
-while [ "$FSTAB" != "yes" ]; do 
-    echo -en "Have you updated the /etc/fstab file for the root directory \"$ROOT\"? (Type \"yes\" to proceed)" &&
-    read FSTAB 
-done
-echo -e "Creating bindings for new Linux Root \"$ROOT\"..." && exit 0
-for i in sys dev proc; do mount --bind /$i "$ROOT/$i"; done &&
-echo -e "Installing grub2...\n" &&
-if [ "$EFI" = "-e" ]; then
-    chroot "$ROOT" sudo grub2-install --target=x86_64-efi --efi-directory="/boot/efi" $DEVICE
-else
-    chroot "$ROOT" sudo grub2-install --target=i386-pc $DEVICE
+install_grub2(){
+    echo -e "Installing grub2...\n" &&
+    if [ -n "$EFI_DEVICE" ]; then
+        mount "$EFI_DEVICE" "$ROOT_DIR/boot/efi" &&
+        chroot "$ROOT" sudo grub2-install --target=x86_64-efi --efi-directory="/boot/efi" "$ROOT_DEVICE"
+    else
+        chroot "$ROOT" sudo grub2-install --target=i386-pc "$ROOT_DEVICE"
+    fi
+}
+
+recreate_mkinitrd(){
+    echo -e "Recriating initrd ..." &&
+    chroot "$ROOT" su - -c "mkinitrd" &&
+    echo -e "\nMKINITRD recreation completed with SUCCESS ..."
+}
+
+release_resources(){
+    if [ -n "$EFI_DEVICE" ]; then
+        umount "$EFI_DEVICE"
+    fi    
+    for i in sys dev proc; do 
+        umount "$ROOT_DIR/$i"
+    done    
+    cd "$ROOT_DIR/.." &&
+    umount "$ROOT_DIR"
+}
+
+#CHECK FOR INCORRECT ARGUMENTS OR HELP REQUEST
+check_help "$@" && 
+
+create_bindings &&
+install_grub2
+if [ $? -ne 0 ]; then 
+    echo -e "\n\t$PROG_NAME - FAILED"
+    exit 1
 fi
-if [ $? -ne 0 ]; then (echo -e "\n\t$PROG_NAME - FAILED" && exit 1); fi
-echo -e "Recriating mkinitrd..." &&
-chroot "$ROOT" su - -c "mkinitrd" &&
-echo -e "\nMKINITRD recreation completed with SUCCESS, releasing resources..." &&
-for i in sys dev proc; do umount "$ROOT/$i"; done &&
-echo -e "\n\t$PROG_NAME - SUCCESS" ||
-(echo -e "\n\t$PROG_NAME - FAILED" && exit 1)
+
+recreate_mkinitrd &&
+release_resources &&
+display_result "$PROG_NAME"
 
 
 
