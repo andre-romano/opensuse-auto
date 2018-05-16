@@ -3,8 +3,9 @@
 # set default variables
 #
 AUDIO_CODEC='libmp3lame'
-AUDIO_ARGS_SD='-cutoff:a 20000 -q:a 4'
-AUDIO_ARGS_HD='-cutoff:a 20000 -q:a 2'
+AUDIO_FILTERS="dynaudnorm=c=1:s=28.0"
+AUDIO_ARGS_SD="-cutoff:a 20000 -af $AUDIO_FILTERS -q:a 4"
+AUDIO_ARGS_HD="-cutoff:a 20000 -af $AUDIO_FILTERS -q:a 2"
 AUDIO_ARGS=$AUDIO_ARGS_SD
 
 #set default control variables
@@ -43,7 +44,7 @@ show_copywrite() {
 show_help() {
     show_copywrite "FFMPEG Convert to MP3"
     echo -e "\n\tUsage: mp3_encode [options] file1 [file2 [...]]\n"
-    echo -e "\tOPTION\tDESCRIPTION"
+    echo -e "\tOPTION\tDESCRIPTION"    
     echo -e "\t$REMOVE\tRemove old file when convertion is done"
     echo -e "\t$QUALITY\tDefine quality of the output (sd, hd). Default is sd"
     echo -e "\n\tEXAMPLES"

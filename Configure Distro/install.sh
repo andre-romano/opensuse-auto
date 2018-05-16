@@ -17,7 +17,6 @@ DKMS="$OPENSUSE_AUTO/DKMS/install.sh"
     DISABLE_SEARCH="$SCRIPT_DIR/disable_desktop_search.sh"
     CLEAR_TMP="$SCRIPT_DIR/clear_tmp.sh"
     DNS="$SCRIPT_DIR/dns.sh"
-    SWAPPINESS_FILE="$SCRIPT_DIR/swappiness.sh"
 
 #TOOLS
     LUKS="$OPENSUSE_AUTO/luks/install.sh"
@@ -35,6 +34,7 @@ DKMS="$OPENSUSE_AUTO/DKMS/install.sh"
     BUMBLEBEE="$OPENSUSE_AUTO/Workarounds/NVIDIA Optimus/install.sh"
     BLUETOOTH="$OPENSUSE_AUTO/Workarounds/Bluetooth RFKILL Unlock/install.sh"
     SCREEN="$OPENSUSE_AUTO/Workarounds/Fix Screen Issues (RANDR)/install.sh"    
+    TWEAKS_KERNEL="$OPENSUSE_AUTO/Kernel/tweaks.sh"
 
 # if it's not root, exit!
 [ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
@@ -118,7 +118,7 @@ install_workarounds(){
     run_script "$SCREEN" "AVOID SCREEN PROBLEMS (XRANDR) - "
 
     # activate auto-update script (run updates automagically)
-    run_script "$SWAPPINESS_FILE" "TUNE SWAPPINESS FOR DESKTOP - "
+    run_script "$TWEAKS_KERNEL" "TUNE KERNEL FOR DESKTOP - "
 
     # improve hdd / ssd and other storages performance
     run_script "$HDD" "STORAGE TUNNING SCRIPT - "

@@ -1,15 +1,23 @@
 # Avoid binaries
 **/Anaconda*
 **/pycharm-*
-bin
-.bins
+**/bin
+**/.bins
+**/src
 ffmpeg_src
 *kate-swp
-*.log
+**/*.log
+**/*.tar.gz
+**/*.tar.xz
+**/*.rpm
+**/*.deb
 
 # avoid pdfs and sublime binaries
 **/*.pdf
+**/*.mkv
+**/*.mp4
 Sublime Text*
+Kernel/tests
 
 # avoid other not useful files
 KWALLET integration*

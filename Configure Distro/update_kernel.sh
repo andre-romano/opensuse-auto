@@ -7,7 +7,7 @@ SUSE_VERSION="$(bash "$UTILITIES/suse_version.sh")"
 
 MSG="Installation of codecs"
 
-KERNEL="$OPENSUSE_AUTO/Repositories/kernel.sh"
+KERNEL="$OPENSUSE_AUTO/Kernel/install.sh"
 
 echo "\nInstalling new kernel...\n" &&
 bash "$KERNEL"

@@ -6,14 +6,16 @@ SUSE_VERSION="$(bash "$UTILITIES/suse_version.sh")"
 # if it's not root, exit!
 [ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
 
-MSG="Deactivation of BALOO Desktop Search"
+MSG="Deactivation of Desktop Search"
 
 if [ "$SUSE_VERSION" = "13.2" ]; then
-    DESKTOP_FILE=/usr/share/autostart/baloo_file.desktop
+    DESKTOP_DIR=/usr/share/autostart
 else
-    DESKTOP_FILE=/etc/xdg/autostart/baloo_file.desktop
+    DESKTOP_DIR=/etc/xdg/autostart
 fi
 
-echo "Hidden=True" >> "$DESKTOP_FILE" &&
+for var in $DESKTOP_DIR/baloo*.desktop $DESKTOP_DIR/tracker-*.desktop ; do
+    echo "Hidden=True" >> "$var" 
+done
 echo "$MSG - SUCCESS" ||
 (echo "$MSG - FAILED" && exit 1)
