@@ -36,5 +36,5 @@ net.core.rmem_max = 8388608
 # tcp read buffer = min (default), pressure, max (in bytes)
 net.ipv4.tcp_rmem = 4096 174760 8388608
 
-' >> /etc/sysctl.d/99-sysctl.conf &&
+' > /etc/sysctl.d/99-tweaks.conf &&
 echo -e '\n\tTweaks applied with SUCCESS\n'
