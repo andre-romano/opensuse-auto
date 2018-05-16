@@ -6,7 +6,8 @@ UTILITIES="$OPENSUSE_AUTO/Utilities"
 PWD=$(pwd) 
 git clone 'https://github.com/Nefelim4ag/Ananicy.git' "$SCRIPT_DIR"/src &&
 cd "$SCRIPT_DIR"/src &&
-make -j4 install 
+make -j4 install &&
+systemctl enable ananicy 
 STATUS=$?
 cd "$PWD"
 if [ $STATUS -eq 0 ]; then
