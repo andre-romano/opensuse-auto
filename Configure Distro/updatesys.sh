@@ -8,8 +8,6 @@ SUSE_VERSION="$(bash "$UTILITIES/suse_version.sh")"
 
 AUTO_UPDATE="$UTILITIES/setautoupdate.sh"
 
-ANANICY="$OPENSUSE_AUTO/Ananicy/install.sh"
-
 PACKMAN="$OPENSUSE_AUTO/Repositories/packman.sh"
 LIBDVDCSS="$OPENSUSE_AUTO/Repositories/libdvdcss.sh"
 PRINTING="$OPENSUSE_AUTO/Repositories/printing.sh"
@@ -55,7 +53,6 @@ echo -e "\n\tUpdate completed - SUCCESS\n" &&
 echo -e "Installation of additional programs..." &&
 zypper -n install -l $ZYPP &&
 "$AUTO_UPDATE" "$ZYPP_UPDATABLE" &&
-bash "$ANANICY" && #install ionice auto daemon
 bash "$BAOBAB" && #install disk usage analiser
 bash "$GOOGLE_CHROME" && #install google chrome web browser
 bash "$UNISON" && #establish ulimits on heavyweight sync program
