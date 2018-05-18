@@ -12,6 +12,7 @@ PACKMAN="$OPENSUSE_AUTO/Repositories/packman.sh"
 LIBDVDCSS="$OPENSUSE_AUTO/Repositories/libdvdcss.sh"
 PRINTING="$OPENSUSE_AUTO/Repositories/printing.sh"
 
+ANANICY="$OPENSUSE_AUTO/Ananicy/install.sh"
 GOOGLE_CHROME="$OPENSUSE_AUTO/Google Chrome/install.sh"
 UNISON="$OPENSUSE_AUTO/Unison/install.sh"
 BAOBAB="$OPENSUSE_AUTO/Baobab/install.sh"
@@ -53,6 +54,7 @@ echo -e "\n\tUpdate completed - SUCCESS\n" &&
 echo -e "Installation of additional programs..." &&
 zypper -n install -l $ZYPP &&
 "$AUTO_UPDATE" "$ZYPP_UPDATABLE" &&
+bash "$ANANICY" && #ananicy auto nice daemon
 bash "$BAOBAB" && #install disk usage analiser
 bash "$GOOGLE_CHROME" && #install google chrome web browser
 bash "$UNISON" && #establish ulimits on heavyweight sync program

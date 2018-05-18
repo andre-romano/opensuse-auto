@@ -1,0 +1,11 @@
+[Desktop Entry]
+X-SuSE-translate=true
+Type=Service
+X-KDE-StartupNotify=false
+X-KDE-autostart-phase=0
+X-GNOME-Autostart-enabled=true
+NoDisplay=true
+Exec=/usr/bin/ionice -c 2 -n 7 -t /usr/bin/ananicy start &> /dev/null &
+Name=Ananicy
+GenericName=Ananicy - ANother Auto NICe daemon
+Comment=Ananicy - ANother Auto NICe daemon
