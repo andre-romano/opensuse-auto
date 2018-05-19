@@ -1,0 +1,2 @@
+# QT bittorrent client
+{ "name": "qbittorrent", "type": "BG_CPUIO" }
