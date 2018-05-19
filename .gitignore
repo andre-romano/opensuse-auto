@@ -9,7 +9,7 @@ ffmpeg_src
 **/*.log
 **/*.tar.gz
 **/*.tar.xz
-**/*.rpm
+Kernel/**/*.rpm
 **/*.deb
 
 # avoid pdfs and sublime binaries
