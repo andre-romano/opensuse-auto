@@ -35,7 +35,7 @@ is_ssd(){
 
 tuning_filesystems(){    
     FS=ext[234]
-    APPEND_OPTIONS="noatime commit=20"
+    APPEND_OPTIONS="noatime commit=30"
     APPEND_OPTIONS_SSD="discard"
     grep $FS /etc/fstab | while read -r line; do        
         # check for ssd
