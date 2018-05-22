@@ -11,14 +11,14 @@ UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
 [ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
 
 get_device(){
-    DEV_UUID=$(echo $1 | tr -s ' ' | cut -d' ' -f1)
+    local DEV_UUID=$(echo $1 | tr -s ' ' | cut -d' ' -f1)
     if echo $DEV_UUID | grep -q 'UUID'; then
-        UUID=$(echo $DEV_UUID | cut -d'=' -f2)
-        DEV=$(blkid | grep $UUID | cut -d':' -f1)        
+        local UUID=$(echo $DEV_UUID | cut -d'=' -f2)
+        local DEV=$(blkid | grep $UUID | cut -d':' -f1)        
     else
-        DEV=$DEV_UUID
+        local DEV=$DEV_UUID
     fi
-    DEV=$(echo $DEV | sed -e 's@/dev/@@g')
+    local DEV=$(echo $DEV | sed -e 's@/dev/@@g')
     echo $DEV
 }
 
@@ -33,20 +33,33 @@ is_ssd(){
     fi
 }
 
+change_to_tmpfs(){
+    local MOUNTPOINT=$1
+    local SIZE=$2
+    local REPLACE="tmpfs  $MOUNTPOINT  tmpfs  nodev,nosuid,relatime,size=$SIZE  0  0"
+    # perform the changes into the file fstab
+    if grep -P " $MOUNTPOINT " /etc/fstab &> /dev/null; then
+        # perform the changes into the file fstab
+        sed -i -e "s@.*$MOUNTPOINT.*@$REPLACE@" /etc/fstab
+    else
+        echo "$REPLACE" >> /etc/fstab
+    fi
+}
+
 tuning_filesystems(){    
-    FS=ext[234]
-    APPEND_OPTIONS="noatime commit=30"
-    APPEND_OPTIONS_SSD="discard"
+    local FS=ext[234]
+    local APPEND_OPTIONS="noatime commit=30"
+    local APPEND_OPTIONS_SSD="discard"
     grep $FS /etc/fstab | while read -r line; do        
         # check for ssd
-        DEV=$(get_device "$line" | sed -e 's@[0-9]@@g')
+        local DEV=$(get_device "$line" | sed -e 's@[0-9]@@g')
         if is_ssd "$DEV" && [ -n "$APPEND_OPTIONS_SSD" ]; then 
             APPEND_OPTIONS="$APPEND_OPTIONS $APPEND_OPTIONS_SSD"
         fi
         # 
-        REPLACE="$line"
+        local REPLACE="$line"
         # get all options and filter them out of append_options 
-        OPTIONS=$(echo $line | tr -s " " | cut -d' ' -f4 | tr ',' ' ')        
+        local OPTIONS=$(echo $line | tr -s " " | cut -d' ' -f4 | tr ',' ' ')        
         for op in $OPTIONS; do        
             APPEND_OPTIONS=$(echo $APPEND_OPTIONS | sed -e "s@$op@@" | tr -s ' ' | xargs)
         done
@@ -61,8 +74,14 @@ tuning_filesystems(){
     done
 }
 
+tuning_tmpfs(){
+   change_to_tmpfs '/tmp' '50M' &&
+   change_to_tmpfs '/var/log' '512M'
+}
+
 # this makes the filesystems mounted at boot in /etc/fstab to run with no_atime
 tuning_filesystems &&
+tuning_tmpfs &&
 
 # THIS SCRIPTS INSTALLS THE FOLLOWING SCRIPT INSIDE THE SYSTEM SO THAT IT RUNS
 # PERIODICALLY WITH CRON (ACCORDING TO THE SCHEDULE BELOW)
