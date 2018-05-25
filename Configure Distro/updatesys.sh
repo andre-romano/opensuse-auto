@@ -33,7 +33,7 @@ ZYPP_MULTIMEDIA='ffmpeg libmp3lame0 libfdk-aac1 libfaac0 mediainfo x264 youtube-
 # utilities software
 ZYPP_UTILITIES='MozillaFirefox MozillaThunderbird dropbox speedcrunch kate keepassx autossh sshfs autofs pdftk aria2 uget nodejs ghostscript ghostscript-fonts'
 # system software
-ZYPP_SYSTEM='sni-qt sni-qt-32bit pavucontrol pv fcoe-utils open-lldp fetchmsttfonts'
+ZYPP_SYSTEM='sni-qt sni-qt-32bit pavucontrol pv fcoe-utils open-lldp fetchmsttfonts kdegraphics-thumbnailers'
 
 # join everything in one variable
 ZYPP="$ZYPP_SYSTEM $ZYPP_UTILITIES $ZYPP_MULTIMEDIA $ZYPP_FUSE $ZYPP_COMPAC $ZYPP_XF86"
