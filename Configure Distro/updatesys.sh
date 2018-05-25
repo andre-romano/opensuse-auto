@@ -10,9 +10,10 @@ AUTO_UPDATE="$UTILITIES/setautoupdate.sh"
 
 PACKMAN="$OPENSUSE_AUTO/Repositories/packman.sh"
 LIBDVDCSS="$OPENSUSE_AUTO/Repositories/libdvdcss.sh"
-PRINTING="$OPENSUSE_AUTO/Repositories/printing.sh"
+KERNEL="$OPENSUSE_AUTO/Repositories/kernel.sh"
 
 ANANICY="$OPENSUSE_AUTO/Ananicy/install.sh"
+TUNED="$OPENSUSE_AUTO/Tuned/install.sh"
 GOOGLE_CHROME="$OPENSUSE_AUTO/Google Chrome/install.sh"
 UNISON="$OPENSUSE_AUTO/Unison/install.sh"
 BAOBAB="$OPENSUSE_AUTO/Baobab/install.sh"
@@ -45,7 +46,7 @@ ZYPP="$ZYPP_SYSTEM $ZYPP_UTILITIES $ZYPP_MULTIMEDIA $ZYPP_FUSE $ZYPP_COMPAC $ZYP
 zypper -n up -l &&
 bash "$LIBDVDCSS" &&
 bash "$PACKMAN" &&
-# bash "$PRINTING" &&
+bash "$KERNEL" &&
 echo -e "\n\tUpdating operational system and programs...\n" &&
 zypper -n dup -l --download-in-advance &&
 zypper -n patch -l &&
@@ -54,10 +55,11 @@ echo -e "\n\tUpdate completed - SUCCESS\n" &&
 echo -e "Installation of additional programs..." &&
 zypper -n install -l $ZYPP &&
 "$AUTO_UPDATE" "$ZYPP_UPDATABLE" &&
-bash "$ANANICY" && #ananicy auto nice daemon
-bash "$BAOBAB" && #install disk usage analiser
-bash "$GOOGLE_CHROME" && #install google chrome web browser
-bash "$UNISON" && #establish ulimits on heavyweight sync program
+bash "$ANANICY" && # ananicy auto nice daemon
+bash "$TUNED" &&   # tune system for a specific usage dynamically
+bash "$BAOBAB" &&  # install disk usage analiser
+bash "$GOOGLE_CHROME" && # install google chrome web browser
+bash "$UNISON" && # establish ulimits on heavyweight sync program
 echo -e "\n\t$MSG - SUCCESS\n" &&
 zypper clean ||
 (echo -e "\n\t$MSG - FAILED\n" && exit 1)

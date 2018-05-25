@@ -9,8 +9,8 @@ echo '
 # MEMORY MANAGEMENT
 
 # cache (higher means more cache)
-vm.dirty_background_bytes=53687091200
-vm.dirty_bytes=536870912000
+vm.dirty_background_bytes=104857600
+vm.dirty_ratio=30
 vm.dirty_expire_centisecs = 3000
 
 # (lower means less swap, more programs in memory)

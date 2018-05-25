@@ -81,8 +81,4 @@ tuning_tmpfs(){
 
 # this makes the filesystems mounted at boot in /etc/fstab to run with no_atime
 tuning_filesystems &&
-tuning_tmpfs &&
-
-# THIS SCRIPTS INSTALLS THE FOLLOWING SCRIPT INSIDE THE SYSTEM SO THAT IT RUNS
-# PERIODICALLY WITH CRON (ACCORDING TO THE SCHEDULE BELOW)
-create_cron_job "$SCRIPT_DIR" "/etc" "storage_tuning.sh" "@reboot" 
+tuning_tmpfs 

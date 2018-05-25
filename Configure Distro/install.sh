@@ -8,8 +8,7 @@ CURRENT_DESKTOP="$(env | grep CURRENT_DESKTOP | awk -F = '{print$2}')"
 #SOFTWARE INSTALL
 DKMS="$OPENSUSE_AUTO/DKMS/install.sh"
 
-#INSTALL SCRIPTS
-    UPDATE_KERNEL="$SCRIPT_DIR/update_kernel.sh"
+#INSTALL SCRIPTS    
     UPDATE_FILE="$SCRIPT_DIR/updatesys.sh"
     CODECS_FILE="$SCRIPT_DIR/codecs.sh"
     GRAPHICS_FILE="$SCRIPT_DIR/graphics_drivers.sh"
@@ -21,15 +20,15 @@ DKMS="$OPENSUSE_AUTO/DKMS/install.sh"
 #TOOLS
     LUKS="$OPENSUSE_AUTO/luks/install.sh"
     ISO="$OPENSUSE_AUTO/isomount/install.sh"
-    PDF="$OPENSUSE_AUTO/pdf/install.sh"
+    PDF="$OPENSUSE_AUTO/pdf/install.sh"    
 
 #WORKAROUNDS FOR COMMON ISSUES OF KERNEL/OPENSUSE/DRIVERS
     MOUSE_MSFT="$OPENSUSE_AUTO/Workarounds/Mouse Fast Scroll - Microsoft/install.sh"
     SUSPEND="$OPENSUSE_AUTO/Workarounds/Suspend/install.sh"
     WIFI="$OPENSUSE_AUTO/Workarounds/Wifi Performance/install.sh"
     PULSE_AUDIO="$OPENSUSE_AUTO/Workarounds/PulseAudio Jack Detection/install.sh"
-    VPN="$OPENSUSE_AUTO/Workarounds/VPN Kernel Allow/install.sh"    
-    HDD="$OPENSUSE_AUTO/Workarounds/Storage Tuning/install.sh"
+    VPN="$OPENSUSE_AUTO/Workarounds/VPN Kernel Allow/install.sh"        
+    HDD="$OPENSUSE_AUTO/Workarounds/Storage Tuning/install.sh"        
     # NOT USED ANYMORE
     BUMBLEBEE="$OPENSUSE_AUTO/Workarounds/NVIDIA Optimus/install.sh"
     BLUETOOTH="$OPENSUSE_AUTO/Workarounds/Bluetooth RFKILL Unlock/install.sh"
@@ -38,22 +37,6 @@ DKMS="$OPENSUSE_AUTO/DKMS/install.sh"
 
 # if it's not root, exit!
 [ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
-
-# show options to the user
-if [ "$1" == "-h" ] || [ "$1" == "--help" ] || [ "$1" == "--h" ]; then
-    echo -e "\n\topenSUSE Installation Automation Tool\n"
-    echo -e "\nOPTION\tDESCRIPTION\n"
-    echo -e "-k\tUpdate kernel to latest stable (use it only if necessary - missing drivers, malfunctional hardware, performance issues, etc)\n\n"
-    exit 0
-fi
-
-# read user defined variables
-for var in "$@"; do
-    case "$var" in
-        -k) KERNEL_SHOULD_UPDATE=y
-            ;;
-    esac
-done
 
 STATUS=""
 LOG_FILE="install.log"
@@ -106,7 +89,7 @@ install_workarounds(){
     run_script "$MOUSE_MSFT" "\tMICROSOFT MOUSE - "
 
     #fix wifi performance driver problems
-    run_script "$WIFI" "\tWIFI PERFORMANCE - "
+    run_script "$WIFI" "\tWIFI PERFORMANCE TUNNING - "
 
     # FIX PULSE AUDIO NOT DETECTING HEADPHONE ON BOOT
     run_script "$PULSE_AUDIO" "\tPULSE AUDIO AUDIO JACK DECTECTION ON BOOT - "
@@ -118,7 +101,7 @@ install_workarounds(){
     run_script "$SCREEN" "AVOID SCREEN PROBLEMS (XRANDR) - "
 
     # activate auto-update script (run updates automagically)
-    run_script "$TWEAKS_KERNEL" "TUNE KERNEL FOR DESKTOP - "
+    run_script "$TWEAKS_KERNEL" "TUNE KERNEL FOR SPEED - "
 
     # improve hdd / ssd and other storages performance
     run_script "$HDD" "STORAGE TUNNING SCRIPT - "
@@ -144,12 +127,6 @@ install_graphics(){
 update_system(){
     #update whole system
     run_script "$UPDATE_FILE" "SYSTEM UPDATE - "
-
-    # check if kernel update is really needed
-    if [ "$KERNEL_SHOULD_UPDATE" == "y" ]; then
-        #update kernel
-        run_script "$UPDATE_KERNEL" "\tUPDATE KERNEL - "
-    fi
 }
 
 #install codecs
