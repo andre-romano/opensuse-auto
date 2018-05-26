@@ -24,12 +24,10 @@ DKMS="$OPENSUSE_AUTO/DKMS/install.sh"
 
 #WORKAROUNDS FOR COMMON ISSUES OF KERNEL/OPENSUSE/DRIVERS
     MOUSE_MSFT="$OPENSUSE_AUTO/Workarounds/Mouse Fast Scroll - Microsoft/install.sh"
-    SUSPEND="$OPENSUSE_AUTO/Workarounds/Suspend/install.sh"
-    WIFI="$OPENSUSE_AUTO/Workarounds/Wifi Performance/install.sh"
+    SUSPEND="$OPENSUSE_AUTO/Workarounds/Suspend/install.sh"    
     PULSE_AUDIO="$OPENSUSE_AUTO/Workarounds/PulseAudio Jack Detection/install.sh"
-    VPN="$OPENSUSE_AUTO/Workarounds/VPN Kernel Allow/install.sh"        
-    HDD="$OPENSUSE_AUTO/Workarounds/Storage Tuning/install.sh"            
-    CPU="$OPENSUSE_AUTO/CPU Tuning/install.sh"
+    VPN="$OPENSUSE_AUTO/Workarounds/VPN Kernel Allow/install.sh"            
+    TUNING="$OPENSUSE_AUTO/Workarounds/Performance Tuning/install.sh"                
     # NOT USED ANYMORE
     BUMBLEBEE="$OPENSUSE_AUTO/Workarounds/NVIDIA Optimus/install.sh"
     BLUETOOTH="$OPENSUSE_AUTO/Workarounds/Bluetooth RFKILL Unlock/install.sh"
@@ -88,9 +86,6 @@ install_workarounds(){
     #fix microsoft mouse driver problems
     run_script "$MOUSE_MSFT" "\tMICROSOFT MOUSE - "
 
-    #fix wifi performance driver problems
-    run_script "$WIFI" "\tWIFI PERFORMANCE TUNNING - "
-
     # FIX PULSE AUDIO NOT DETECTING HEADPHONE ON BOOT
     run_script "$PULSE_AUDIO" "\tPULSE AUDIO AUDIO JACK DECTECTION ON BOOT - "
 
@@ -98,13 +93,10 @@ install_workarounds(){
     run_script "$DKMS" "\tDKMS INSTALL - "
 
     # avoid multi-screen bugs in KDE and other X11 desktops
-    run_script "$SCREEN" "AVOID SCREEN PROBLEMS (XRANDR) - "
+    run_script "$SCREEN" "AVOID SCREEN PROBLEMS (XRANDR) - "    
 
-    # improve hdd / ssd and other storages performance
-    run_script "$HDD" "STORAGE TUNNING SCRIPT - "
-
-    # improve cpu performance
-    run_script "$CPU" "CPU TUNNING SCRIPT - "
+    # improve system speed
+    run_script "$TUNING" "SYSTEM TUNNING SCRIPT (HIGH PERFORMANCE) - "  
 
 #   NOT NEEDED WORKAROUNDS ANYMORE (NEW SYSTEMS / KERNEL CORRECT THIS PROBLEMS)
 

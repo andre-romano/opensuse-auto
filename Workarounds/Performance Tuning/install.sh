@@ -6,20 +6,29 @@ UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
 
 . "$UTILITIES_INCLUDE/general_functions.sh"
 . "$UTILITIES_INCLUDE/cron_functions.sh"
+. "$UTILITIES_INCLUDE/autostart_functions.sh"
 
-# if it's not root, exit!
-[ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
+sysctl_tuning(){
+    local SYSCTL_CONF=/etc/sysctl.d/99-tweaks.conf
+    echo '
+# VIRTUAL MEMORY
+vm.dirty_background_bytes=104857600
+vm.dirty_ratio=10
+vm.swappiness=20
+vm.vfs_cache_pressure=50
 
-get_device(){
-    local DEV_UUID=$(echo $1 | tr -s ' ' | cut -d' ' -f1)
-    if echo $DEV_UUID | grep -q 'UUID'; then
-        local UUID=$(echo $DEV_UUID | cut -d'=' -f2)
-        local DEV=$(blkid | grep $UUID | cut -d':' -f1)        
-    else
-        local DEV=$DEV_UUID
-    fi
-    local DEV=$(echo $DEV | sed -e 's@/dev/@@g')
-    echo $DEV
+# KERNEL
+kernel.numa_balancing=0
+kernel.sched_min_granularity_ns=10000000
+kernel.sched_migration_cost_ns=5000000
+
+# NETWORK 
+net.core.busy_read=50
+net.core.busy_poll=50
+net.ipv4.tcp_fastopen=3
+    ' > "$SYSCTL_CONF" &&
+    sysctl --system &&
+    echo -e '\n\tTweaks applied with SUCCESS\n'
 }
 
 # returns true (== 0) if its an SSD
@@ -31,6 +40,18 @@ is_ssd(){
         # this value == 1 implies a rotationary mechanical unit (HDD, TAPE, CD/DVD)
         return 1
     fi
+}
+
+get_device(){
+    local DEV_UUID=$(echo $1 | tr -s ' ' | cut -d' ' -f1)
+    if echo $DEV_UUID | grep -q 'UUID'; then
+        local UUID=$(echo $DEV_UUID | cut -d'=' -f2)
+        local DEV=$(blkid | grep $UUID | cut -d':' -f1)        
+    else
+        local DEV=$DEV_UUID
+    fi
+    local DEV=$(echo $DEV | sed -e 's@/dev/@@g')
+    echo $DEV
 }
 
 change_to_tmpfs(){
@@ -72,14 +93,14 @@ tuning_filesystems(){
         # perform the changes into the file fstab
         sed -i -e "s@$line@$REPLACE@" /etc/fstab
     done
+    change_to_tmpfs '/tmp' '50M' &&
+    change_to_tmpfs '/var/log' '512M'
 }
 
-tuning_tmpfs(){
-   change_to_tmpfs '/tmp' '50M' &&
-   change_to_tmpfs '/var/log' '512M'
-}
-
-# this makes the filesystems mounted at boot in /etc/fstab to run with no_atime
+sysctl_tuning &&
 tuning_filesystems &&
-tuning_tmpfs &&
-create_cron_job "$SCRIPT_DIR" "/etc" "set_hdd_tweaks.sh" "@reboot"
+install_service "tuned_perf.service" "tuned_perf.sh" "/etc"
+
+
+
+

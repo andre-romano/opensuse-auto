@@ -1,0 +1,14 @@
+[Unit]
+Description=Tune System Performance
+After=local-fs.target network-pre.target
+RequiresMountsFor=/dev /sys
+
+[Service]
+Type=simple
+ExecStart=/etc/tuned_perf.sh
+Nice=19
+ProtectSystem=true
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

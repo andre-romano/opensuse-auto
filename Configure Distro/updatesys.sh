@@ -13,7 +13,6 @@ LIBDVDCSS="$OPENSUSE_AUTO/Repositories/libdvdcss.sh"
 KERNEL="$OPENSUSE_AUTO/Repositories/kernel.sh"
 
 ANANICY="$OPENSUSE_AUTO/Ananicy/install.sh"
-TUNED="$OPENSUSE_AUTO/Tuned/install.sh"
 GOOGLE_CHROME="$OPENSUSE_AUTO/Google Chrome/install.sh"
 UNISON="$OPENSUSE_AUTO/Unison/install.sh"
 BAOBAB="$OPENSUSE_AUTO/Baobab/install.sh"
@@ -56,7 +55,6 @@ echo -e "Installation of additional programs..." &&
 zypper -n install -l $ZYPP &&
 "$AUTO_UPDATE" "$ZYPP_UPDATABLE" &&
 bash "$ANANICY" && # ananicy auto nice daemon
-bash "$TUNED" &&   # tune system for a specific usage dynamically
 bash "$BAOBAB" &&  # install disk usage analiser
 bash "$GOOGLE_CHROME" && # install google chrome web browser
 bash "$UNISON" && # establish ulimits on heavyweight sync program
