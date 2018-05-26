@@ -28,12 +28,12 @@ DKMS="$OPENSUSE_AUTO/DKMS/install.sh"
     WIFI="$OPENSUSE_AUTO/Workarounds/Wifi Performance/install.sh"
     PULSE_AUDIO="$OPENSUSE_AUTO/Workarounds/PulseAudio Jack Detection/install.sh"
     VPN="$OPENSUSE_AUTO/Workarounds/VPN Kernel Allow/install.sh"        
-    HDD="$OPENSUSE_AUTO/Workarounds/Storage Tuning/install.sh"        
+    HDD="$OPENSUSE_AUTO/Workarounds/Storage Tuning/install.sh"            
+    CPU="$OPENSUSE_AUTO/CPU Tuning/install.sh"
     # NOT USED ANYMORE
     BUMBLEBEE="$OPENSUSE_AUTO/Workarounds/NVIDIA Optimus/install.sh"
     BLUETOOTH="$OPENSUSE_AUTO/Workarounds/Bluetooth RFKILL Unlock/install.sh"
     SCREEN="$OPENSUSE_AUTO/Workarounds/Fix Screen Issues (RANDR)/install.sh"    
-    TWEAKS_KERNEL="$OPENSUSE_AUTO/Kernel/tweaks.sh"
 
 # if it's not root, exit!
 [ "$(whoami)" != "root" ] && echo -e "\n\tRUN this script as ROOT. Exiting...\n" && exit 1
@@ -100,11 +100,11 @@ install_workarounds(){
     # avoid multi-screen bugs in KDE and other X11 desktops
     run_script "$SCREEN" "AVOID SCREEN PROBLEMS (XRANDR) - "
 
-    # activate auto-update script (run updates automagically)
-    run_script "$TWEAKS_KERNEL" "TUNE KERNEL FOR SPEED - "
-
     # improve hdd / ssd and other storages performance
     run_script "$HDD" "STORAGE TUNNING SCRIPT - "
+
+    # improve cpu performance
+    run_script "$CPU" "CPU TUNNING SCRIPT - "
 
 #   NOT NEEDED WORKAROUNDS ANYMORE (NEW SYSTEMS / KERNEL CORRECT THIS PROBLEMS)
 
