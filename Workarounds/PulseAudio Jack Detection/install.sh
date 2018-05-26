@@ -6,8 +6,9 @@ UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
 
 . "$UTILITIES_INCLUDE/cron_functions.sh"
 . "$UTILITIES_INCLUDE/general_functions.sh"
+. "$UTILITIES_INCLUDE/autostart_functions.sh"
 
-create_cron_job "$SCRIPT_DIR" "/etc" "pulse_detect.sh" "@reboot"
+install_service "pulse_detect.service" "pulse_detect.sh" "/etc"
 
 
 

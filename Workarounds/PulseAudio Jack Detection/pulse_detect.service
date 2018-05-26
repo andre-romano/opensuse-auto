@@ -1,0 +1,13 @@
+[Unit]
+Description=PulseAudio Auto Jack Detection
+After=sound.target local-fs.target basic.target
+
+[Service]
+Type=simple
+ExecStart=/etc/pulse_detect.sh
+Nice=19
+ProtectSystem=true
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

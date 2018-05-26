@@ -1,48 +1,42 @@
 #!/bin/bash
+SU=/usr/bin/su
+PACMD=/usr/bin/pacmd
 
-get_pulse_user(){
-    # allow time to PulseAudio daemon to startup
-    local WAIT_TIME=6 # WAIT TIME IN SECS
-    local TIMEOUT=600 # TIMEOUT OF THE DAEMON START PROCESS
-    local MAX_COUNT=$((TIMEOUT / WAIT_TIME))
-    local COUNT=0
-    while [ -z "$PULSE_USER" ]; do    
-        sleep $WAIT_TIME        
-        COUNT=$((COUNT + 1))
-        if [ "$COUNT" -eq "$MAX_COUNT" ]; then
-            echo -e '\n\tERROR: Timeout - PulseAudio has not started ...\n' 1>&2
-            exit 1
+PULSEAUDIO_RUNNING=0
+
+while [ $PULSEAUDIO_RUNNING -eq 0 ]; do    
+    sleep 3
+    PULSE_USERS="$(ps -ef | grep pulseaudio | grep -v grep | tr -s ' ' | cut -d' ' -f1 | tr -s ' ' | xargs)"
+    for user in $PULSE_USERS; do
+        PULSE_USER_UID=$(id -u "$user")
+
+        # WE KNOW PULSEAUDIO IS RUNNING AND WE ALSO KNOW its user name, now lets define where 
+        # is the process .PID file    
+        export PULSE_RUNTIME_PATH="/var/run/user/$PULSE_USER_UID/pulse"
+
+        # check if the headphones are connected right now
+        OUTPUT_PORT='analog-output-headphones'
+        PORT_CONNECTED=$($PACMD list-cards | grep -i "$OUTPUT_PORT" | grep -i -o -P 'available: [a-zA-Z]*' | cut -d' ' -f2)
+
+        # if the PORT IS CONNECTED then SET IT AS THE CURRENT OUTPUT PORT ( this change is not 
+        # persistent, but since this script runs at every boot, then if the port is connected
+        # during boot time, then it will become the default output port )
+        if [ "$PORT_CONNECTED" == 'yes' ]; then
+            $PACMD set-sink-port 1 "$OUTPUT_PORT"
+            echo ' '
+            echo 'Headphones have been set'            
+            echo ' '
+        else
+            echo ' '
+            echo 'No headphones detected on boot'
+            echo ' '
         fi
-        local PULSE_USER="$(ps -ef | grep pulseaudio | grep -v grep | tr -s ' ' | cut -d' ' -f1)"
+        chown "$user" -R "$PULSE_RUNTIME_PATH"
+        PULSEAUDIO_RUNNING=1
     done    
-    echo $PULSE_USER | tr -s ' '
-}
-
-check_port_connected(){
-    local PULSE_USER_UID="$1"
-
-    # WE KNOW PULSEAUDIO IS RUNNING AND WE ALSO KNOW its user name, now lets define where 
-    # is the process .PID file    
-    export PULSE_RUNTIME_PATH="/var/run/user/$PULSE_USER_UID/pulse" 
-
-    # check if the headphones are connected right now
-    local OUTPUT_PORT='analog-output-headphones'
-    local PORT_CONNECTED=$(pacmd list-cards | awk '{print tolower($0)}' | grep "$OUTPUT_PORT" | grep -o 'available: [a-zA-Z]*' | cut -d' ' -f2)
-
-    # if the PORT IS CONNECTED then SET IT AS THE CURRENT OUTPUT PORT ( this change is not 
-    # persistent, but since this script runs at every boot, then if the port is connected
-    # during boot time, then it will become the default output port )
-    if [ "$PORT_CONNECTED" == 'yes' ]; then
-        pacmd set-sink-port 1 "$OUTPUT_PORT"
-    fi
-}
-
-
-for user in $(get_pulse_user); do
-    sudo su "$user" -c "
-    check_port_connected "$(id -u "$user")"
-    "    
 done
+
+
 
 
 
