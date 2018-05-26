@@ -81,4 +81,5 @@ tuning_tmpfs(){
 
 # this makes the filesystems mounted at boot in /etc/fstab to run with no_atime
 tuning_filesystems &&
-tuning_tmpfs 
+tuning_tmpfs &&
+create_cron_job "$SCRIPT_DIR" "/etc" "set_hdd_tweaks.sh" "@reboot"
