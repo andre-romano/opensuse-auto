@@ -1,0 +1,18 @@
+[Unit]
+Description=Tune System Powersave
+After=local-fs.target network-pre.target
+RequiresMountsFor=/dev /sys
+Conflicts=tuned_performance.service tuned_balance.service
+
+[Service]
+Type=oneshot
+ExecStart=/etc/tuned_system.sh powersave
+RemainAfterExit=yes
+TimeoutStopSec=30
+Nice=19
+ProtectSystem=true
+PrivateTmp=yes
+
+# Uncomment below if you want it to activate when battery is on
+#[Install]
+#WantedBy=battery.target

@@ -8,7 +8,8 @@ UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
 . "$UTILITIES_INCLUDE/general_functions.sh"
 . "$UTILITIES_INCLUDE/autostart_functions.sh"
 
-install_service "pulse_detect.service" "pulse_detect.sh" "/etc"
+cpy_install "$SCRIPT_DIR" "/etc" "pulse_detect.sh" &&
+install_systemd_service "pulse_detect.service" 
 
 
 

@@ -1,0 +1,4 @@
+[Unit]
+Description=Running on Battery Power
+DefaultDependencies=no
+Conflicts=ac.target

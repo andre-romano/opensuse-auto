@@ -1,0 +1,17 @@
+[Unit]
+Description=Tune System Balance
+After=local-fs.target network-pre.target
+RequiresMountsFor=/dev /sys
+Conflicts=tuned_performance.service tuned_powersave.service
+
+[Service]
+Type=oneshot
+ExecStart=/etc/tuned_system.sh balance
+RemainAfterExit=yes
+TimeoutStopSec=30
+Nice=19
+ProtectSystem=true
+PrivateTmp=yes
+
+[Install]
+WantedBy=battery.target

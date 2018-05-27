@@ -2,13 +2,16 @@
 Description=Tune System Performance
 After=local-fs.target network-pre.target
 RequiresMountsFor=/dev /sys
+Conflicts=tuned_balance.service tuned_powersave.service
 
 [Service]
-Type=simple
-ExecStart=/etc/tuned_perf.sh
+Type=oneshot
+ExecStart=/etc/tuned_system.sh performance
+RemainAfterExit=yes
+TimeoutStopSec=30
 Nice=19
 ProtectSystem=true
 PrivateTmp=yes
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=ac.target

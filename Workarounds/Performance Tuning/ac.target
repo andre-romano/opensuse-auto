@@ -1,0 +1,4 @@
+[Unit]
+Description=Runnning on AC power
+DefaultDependencies=no
+Conflicts=battery.target

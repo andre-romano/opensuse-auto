@@ -97,9 +97,27 @@ tuning_filesystems(){
     change_to_tmpfs '/var/log' '512M'
 }
 
+install_power_systemd(){
+    install_systemd_target "ac.target" "battery.target" &&
+    cpy_install "$SCRIPT_DIR" "/etc" "tuned_system.sh" &&
+    install_systemd_service "tuned_performance.service" "tuned_balance.service" "tuned_powersave.service" &&
+    install_udev_rules "00_power.rules" 
+}
+
+zypper -n in -l hdparm cpupower wireless-tools net-tools procps &&
 sysctl_tuning &&
 tuning_filesystems &&
-install_service "tuned_perf.service" "tuned_perf.sh" "/etc"
+install_power_systemd &&
+echo ' ' &&
+echo ' Tuned Systemd - SUCCESS ' &&
+echo ' ' ||
+(
+    echo ' ' 
+    echo ' Tuned Systemd - FAILED ' 
+    echo ' '
+    exit 1
+)
+
 
 
 
