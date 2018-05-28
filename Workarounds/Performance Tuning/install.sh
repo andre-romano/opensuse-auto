@@ -8,18 +8,18 @@ UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
 . "$UTILITIES_INCLUDE/cron_functions.sh"
 . "$UTILITIES_INCLUDE/autostart_functions.sh"
 
-UNBOUND_DNS="$OPENSUSE_AUTO/Unbound/install.sh"
-
 sysctl_tuning(){
     local SYSCTL_CONF=/etc/sysctl.d/99-tweaks.conf
     echo '
 # VIRTUAL MEMORY
+#    non default-values
 vm.dirty_background_bytes=52428800
 vm.dirty_bytes=104857600
 vm.swappiness=20
 vm.vfs_cache_pressure=50
 
 # KERNEL
+#    non default-values
 kernel.hung_task_timeout_secs = 0
 kernel.numa_balancing=0
 kernel.sched_min_granularity_ns=10000000
@@ -30,25 +30,36 @@ kernel.shmmax = 0xffffffffffffffff
 kernel.shmall = 0x0fffffffffffff00
 
 # NETWORK 
+#    non default-values
 net.core.busy_read=50
 net.core.busy_poll=50
 net.core.netdev_max_backlog = 32768
 net.core.optmem_max = 32768
 net.core.somaxconn = 512
 
-net.ipv4.udp_rmem_min = 8192
-net.ipv4.udp_wmem_min = 8192
+# increase memory for better throughput
+#    non default-values
+net.core.wmem_max=8388608
+net.core.rmem_max=8388608
+net.ipv4.tcp_rmem=8192 131072 8388608
+net.ipv4.tcp_wmem=8192 131072 8388608
+net.ipv4.udp_rmem_min=8192
+net.ipv4.udp_wmem_min=8192
 
-# speed increase, latency low
+# improve TCP speed (and if possible latency)
+#    default-values
 net.ipv4.tcp_mtu_probing=0
+net.ipv4.tcp_sack=1
+net.ipv4.tcp_window_scaling=1
+#    non default-values
 net.ipv4.tcp_fastopen=3
 net.ipv4.tcp_slow_start_after_idle=0
-net.ipv4.tcp_window_scaling=1
 net.ipv4.tcp_keepalive_time=60
 net.ipv4.tcp_keepalive_intvl=10
 net.ipv4.tcp_keepalive_probes=6
 
 # harden the kernel against common attacks
+#    default-values
 net.ipv4.tcp_syncookies=1
 net.ipv4.tcp_rfc1337=1
 net.ipv4.conf.default.rp_filter=1
@@ -57,6 +68,7 @@ net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
 
 # no redirects (desktop machine should not do this)
+#    non default-values
 net.ipv4.conf.default.send_redirects=0
 net.ipv4.conf.all.send_redirects=0
 net.ipv4.conf.default.accept_redirects=0
@@ -163,7 +175,6 @@ zypper -n in -l hdparm cpupower wireless-tools net-tools procps &&
 sysctl_tuning &&
 tuning_filesystems &&
 install_power_systemd &&
-bash "$UNBOUND_DNS" &&
 echo ' ' &&
 echo ' Tuned Systemd - SUCCESS (ALL OPERATIONS - OK) ' &&
 echo ' ' ||
