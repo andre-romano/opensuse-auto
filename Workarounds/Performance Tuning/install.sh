@@ -8,27 +8,68 @@ UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
 . "$UTILITIES_INCLUDE/cron_functions.sh"
 . "$UTILITIES_INCLUDE/autostart_functions.sh"
 
+UNBOUND_DNS="$OPENSUSE_AUTO/Unbound/install.sh"
+
 sysctl_tuning(){
     local SYSCTL_CONF=/etc/sysctl.d/99-tweaks.conf
     echo '
 # VIRTUAL MEMORY
-vm.dirty_background_bytes=104857600
-vm.dirty_ratio=10
+vm.dirty_background_bytes=52428800
+vm.dirty_bytes=104857600
 vm.swappiness=20
 vm.vfs_cache_pressure=50
 
 # KERNEL
+kernel.hung_task_timeout_secs = 0
 kernel.numa_balancing=0
 kernel.sched_min_granularity_ns=10000000
 kernel.sched_migration_cost_ns=5000000
+kernel.msgmax = 65536
+kernel.msgmnb = 65536
+kernel.shmmax = 0xffffffffffffffff
+kernel.shmall = 0x0fffffffffffff00
 
 # NETWORK 
 net.core.busy_read=50
 net.core.busy_poll=50
+net.core.netdev_max_backlog = 32768
+net.core.optmem_max = 32768
+net.core.somaxconn = 512
+
+net.ipv4.udp_rmem_min = 8192
+net.ipv4.udp_wmem_min = 8192
+
+# speed increase, latency low
+net.ipv4.tcp_mtu_probing=0
 net.ipv4.tcp_fastopen=3
+net.ipv4.tcp_slow_start_after_idle=0
+net.ipv4.tcp_window_scaling=1
+net.ipv4.tcp_keepalive_time=60
+net.ipv4.tcp_keepalive_intvl=10
+net.ipv4.tcp_keepalive_probes=6
+
+# harden the kernel against common attacks
+net.ipv4.tcp_syncookies=1
+net.ipv4.tcp_rfc1337=1
+net.ipv4.conf.default.rp_filter=1
+net.ipv4.conf.all.rp_filter=1
+net.ipv4.icmp_echo_ignore_broadcasts=1
+net.ipv4.icmp_ignore_bogus_error_responses=1
+
+# no redirects (desktop machine should not do this)
+net.ipv4.conf.default.send_redirects=0
+net.ipv4.conf.all.send_redirects=0
+net.ipv4.conf.default.accept_redirects=0
+net.ipv4.conf.all.accept_redirects=0
+net.ipv6.conf.default.accept_redirects=0
+net.ipv6.conf.all.accept_redirects=0
     ' > "$SYSCTL_CONF" &&
     sysctl --system &&
-    echo -e '\n\tTweaks applied with SUCCESS\n'
+    echo -e '\nSysctl Tweaks - SUCCESS' ||
+    (
+        echo -e '\nSysctl Tweaks - FAILED'
+        return 1
+    )
 }
 
 # returns true (== 0) if its an SSD
@@ -71,6 +112,7 @@ tuning_filesystems(){
     local FS=ext[234]
     local APPEND_OPTIONS="noatime commit=30"
     local APPEND_OPTIONS_SSD="discard"
+    local STATUS=0
     grep $FS /etc/fstab | while read -r line; do        
         # check for ssd
         local DEV=$(get_device "$line" | sed -e 's@[0-9]@@g')
@@ -92,24 +134,38 @@ tuning_filesystems(){
         REPLACE=$(echo $REPLACE | sed -e "s/$OPTIONS/$APPEND_OPTIONS/")
         # perform the changes into the file fstab
         sed -i -e "s@$line@$REPLACE@" /etc/fstab
+        STATUS=$(($STATUS + $?))
     done
     change_to_tmpfs '/tmp' '50M' &&
-    change_to_tmpfs '/var/log' '512M'
+    change_to_tmpfs '/var/log' '512M' 
+    STATUS=$(($STATUS + $?))
+    [ $STATUS -eq 0 ] &&
+    echo -e '\nFilesystems Tunning - SUCCESS' ||
+    (
+        echo -e '\nFilesystems Tunning - FAILED' 
+        return 1        
+    )
 }
 
 install_power_systemd(){
     install_systemd_target "ac.target" "battery.target" &&
     cpy_install "$SCRIPT_DIR" "/etc" "tuned_system.sh" &&
     install_systemd_service "tuned_performance.service" "tuned_balance.service" "tuned_powersave.service" &&
-    install_udev_rules "00_power.rules" 
+    install_udev_rules "00_power.rules" &&
+    echo -e '\nSystemd Power Optimization - SUCCESS' ||
+    (
+        echo -e '\nSystemd Power Optimization - FAILED' 
+        return 1  
+    )    
 }
 
 zypper -n in -l hdparm cpupower wireless-tools net-tools procps &&
 sysctl_tuning &&
 tuning_filesystems &&
 install_power_systemd &&
+bash "$UNBOUND_DNS" &&
 echo ' ' &&
-echo ' Tuned Systemd - SUCCESS ' &&
+echo ' Tuned Systemd - SUCCESS (ALL OPERATIONS - OK) ' &&
 echo ' ' ||
 (
     echo ' ' 
