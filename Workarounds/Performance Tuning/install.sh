@@ -9,7 +9,7 @@ UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
 . "$UTILITIES_INCLUDE/autostart_functions.sh"
 
 sysctl_tuning(){
-    local SYSCTL_CONF=/etc/sysctl.d/99-tweaks.conf
+    local SYSCTL_CONF=/etc/sysctl.d/99-tweaks.conf    
     echo '
 # VIRTUAL MEMORY
 #    non default-values
@@ -53,7 +53,6 @@ net.ipv4.tcp_sack=1
 net.ipv4.tcp_window_scaling=1
 #    non default-values
 net.ipv4.tcp_fastopen=3
-net.ipv4.tcp_slow_start_after_idle=0
 net.ipv4.tcp_keepalive_time=60
 net.ipv4.tcp_keepalive_intvl=10
 net.ipv4.tcp_keepalive_probes=6
@@ -171,10 +170,24 @@ install_power_systemd(){
     )    
 }
 
+install_systemd_custom_config(){
+    local DIR=/etc/systemd/system
+    while [ $# -gt 0 ]; do
+        local FILE="$1"
+        local FILE_DIR="$DIR/$(basename -s .conf $FILE).service.d"
+        shift       
+        mkdir -p "$FILE_DIR" &&
+        cp "$SCRIPT_DIR/$FILE" "$FILE_DIR"         
+    done
+    systemctl daemon-reload
+}
+
 zypper -n in -l hdparm cpupower wireless-tools net-tools procps &&
 sysctl_tuning &&
 tuning_filesystems &&
 install_power_systemd &&
+install_systemd_custom_config 'logrotate.conf' 'mcelog.conf' 'smartd.conf' &&
+systemctl disable bluetooth.service auditd.service &&
 echo ' ' &&
 echo ' Tuned Systemd - SUCCESS (ALL OPERATIONS - OK) ' &&
 echo ' ' ||

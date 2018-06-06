@@ -21,6 +21,12 @@ MSG="Installation of DKMS"
 bash "$PACKMAN" &&
 echo -e "\tInstalling DKMS... \n"
 zypper -n in -l dkms kernel-devel gcc gcc-c++ make &&
+mkdir -p '/etc/systemd/system/dkms.service.d/' &&
+echo '
+[Service]
+Nice=19
+' > '/etc/systemd/system/dkms.service.d/dkms.conf' &&
+systemctl daemon-reload &&
 systemctl enable dkms &&
 systemctl start dkms &&
 display_result "Installation of DKMS"
