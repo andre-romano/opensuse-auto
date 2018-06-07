@@ -10,7 +10,6 @@ AUTO_UPDATE="$UTILITIES/setautoupdate.sh"
 
 PACKMAN="$OPENSUSE_AUTO/Repositories/packman.sh"
 LIBDVDCSS="$OPENSUSE_AUTO/Repositories/libdvdcss.sh"
-KERNEL="$OPENSUSE_AUTO/Repositories/kernel.sh"
 
 ANANICY="$OPENSUSE_AUTO/Ananicy/install.sh"
 GOOGLE_CHROME="$OPENSUSE_AUTO/Google Chrome/install.sh"
@@ -45,7 +44,6 @@ ZYPP="$ZYPP_SYSTEM $ZYPP_UTILITIES $ZYPP_MULTIMEDIA $ZYPP_FUSE $ZYPP_COMPAC $ZYP
 zypper -n up -l &&
 bash "$LIBDVDCSS" &&
 bash "$PACKMAN" &&
-bash "$KERNEL" &&
 echo -e "\n\tUpdating operational system and programs...\n" &&
 zypper -n dup -l --download-in-advance &&
 zypper -n patch -l &&
