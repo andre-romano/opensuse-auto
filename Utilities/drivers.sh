@@ -13,6 +13,7 @@ HELP_USAGE='drivers'
 # show help
 if [ -n "$1" ]; then show_help; fi
 
+TEMP_MODULES="$SCRIPT_DIR/.temp_drv_modules"
 TEMP_LSPCI="$SCRIPT_DIR/.temp_drv_lspci"
 TEMP_FIND="$SCRIPT_DIR/.temp_drv_find"
 
@@ -24,6 +25,8 @@ empty_line(){
 }
 
 echo -e '\n\tDiscovering drivers ...\n'
+
+find /lib/modules/`uname -r` -name '*.ko' | sed -e "s/\/lib\/modules\/`uname -r`//gi" > "$TEMP_MODULES"        
 
 # find drivers
 find /sys | grep -i "drivers" > "$TEMP_FIND"
@@ -39,5 +42,12 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     fi    
 done < <( lspci )
 empty_line
+echo ' '
+echo '     -----------  AVAILABLE  -----------'
+cat "$TEMP_MODULES"
+echo ' '
+echo '     -----------   IN USE    -----------'
+echo ' '
 cat "$TEMP_LSPCI" | column -t -s "$SEPARATOR"
-rm -f "$TEMP_LSPCI" "$TEMP_FIND" &> /dev/null
+rm -f "$TEMP_LSPCI" "$TEMP_FIND" "$TEMP_MODULES" &> /dev/null
+

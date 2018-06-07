@@ -8,6 +8,26 @@ UTILITIES_INCLUDE="$OPENSUSE_AUTO/Utilities - Include only"
 . "$UTILITIES_INCLUDE/cron_functions.sh"
 . "$UTILITIES_INCLUDE/autostart_functions.sh"
 
+modprobe_tuning(){
+    local MODPROBE_CONF=/etc/modprobe.d/99-wifi-tweaks.conf    
+    echo '
+# Disable Realtek Sleep Mode (Avoid halt in the middle of the connection)
+options rtl8723ae fwlps=0
+options rtl8723be fwlps=0
+
+# Disable Atheros Hardware Encryption (this decreases bandwidth)
+options ath9k nohwcrypt=1
+
+# Intel Wireless Tweaks (swcrypto = 1 disables hw encryption, 11n_disable = 1 disables 802.11n, bt_coex_active=0 disables bluetooth coexistence)
+# options iwlwifi swcrypto=1
+    ' > "$MODPROBE_CONF" &&
+    echo -e '\nMODPROBE Tweaks - SUCCESS' ||
+    (
+        echo -e '\nMODPROBE Tweaks - FAILED'
+        return 1
+    )
+}
+
 sysctl_tuning(){
     local SYSCTL_CONF=/etc/sysctl.d/99-tweaks.conf    
     echo '
@@ -182,7 +202,8 @@ install_systemd_custom_config(){
     systemctl daemon-reload
 }
 
-zypper -n in -l hdparm cpupower wireless-tools net-tools procps &&
+zypper -n in -l hdparm cpupower wireless-tools net-tools procps rfkill &&
+modprobe_tuning &&
 sysctl_tuning &&
 tuning_filesystems &&
 install_power_systemd &&

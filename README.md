@@ -2,7 +2,7 @@ openSUSE-Auto
 ===================
 
 
-This is repository stores scripts to automate **openSUSE**&trade;<sup id=opensuse_back>[1](#opensuse)</sup> Linux distribution in many ways. They allow installation and configuration of software, as well as solve common **openSUSE** &trade; or Linux issues.
+This repository stores scripts to automate **openSUSE**&trade;<sup id=opensuse_back>[1](#opensuse)</sup> Linux distribution in many ways. They allow installation, configuration and optimization of software, as well as solve common **openSUSE** &trade; or Linux issues and problems.
 
 Special Scripts
 ---------------
@@ -29,19 +29,19 @@ sudo ./name_of_repository_to_add.sh
 
 > **CAUTION:**  
 >  
-> Be extra careful with the repositories you add in your system, as well as their priorities. **A bad repository with a high priority might harm your system really bad (to the point of needing a full reinstall of the OS). As a rule of thumb, only install repositories that you TRUST, as you NEED them**. By default, only a subfraction of the repositories available in the _Repositories_ directory is installed in the system by default when you issue the system configuration command _"sudo ./install.sh"_. Check _"Configure Distro/install.sh"_ for more info.  
+> Be extra careful with the repositories you add in your system, as well as their priorities. **A bad repository with a high priority might harm your system really bad (to the point of needing a full reinstall of the OS). As a rule of thumb, only install repositories that you TRUST, as you NEED them**. By default, only a subfraction of the repositories available in the _Repositories_ directory is installed in the system when you issue the system configuration command _"sudo ./install.sh"_. Check _"Configure Distro/install.sh"_ for more info.  
 
 > **CONSISTENCY:**  
 >  
-> Also, keep in mind that if you're using a set of softwares from a repository, only use this repository for these types of software (keep the consistency of your system at all cost).  
-> __**Eg:**__ if you install _ffmpeg_ from _Packman_ repository, all multimedia codecs (and related software and tools) you install / update thereafter should come from _Packman_ repository **ONLY**. Failing to do so may cause system instability, or software malfunction.  
+> Also, keep in mind that if you're using a set of softwares from a repository, only use this repository for these types of software. In other words, keep the consistency of your system at all cost.  
+> __**Eg:**__ if you install _ffmpeg_ from _Packman_ repository, all multimedia codecs (and related software and tools) you install / update thereafter should come from _Packman_ repository **ONLY**. Failing to do so may cause system instability, problems with libraries and software malfunction.  
 
 >**KERNEL:**  
 >  
 > **Do not mess with your kernel unless you know what you're doing.** The "Repositories" path contain the latest kernel repository (kernel.sh) tested and patched by the **openSUSE&trade;** community. This DOES NOT mean you should update your kernel. Keep in mind that newer kernels might have unknown bugs and issues, as well as stability problems. **As a rule of thumb, only upgrade / compile your kernel if:**  
-> - Hardware performance issues
-> - Hardware not recognized or malfunctioning  
-> - You require / use a bleeding edge filesystem (BTRFS, ZFS, etc)  
+> - You have hardware performance issues
+> - Your hardware is not recognized or is malfunctioning  
+> - You require or use a bleeding edge filesystem (BTRFS, ZFS, etc)  
 > - A security breach has been found and needs to be patched
 
 ### luks - Managing Cryptographic Files within Linux
@@ -50,19 +50,19 @@ sudo ./name_of_repository_to_add.sh
 >
 > LUKS is an OpenSource, platform-independent standard that allows you to safely store files in your computer, by using advanced cryptography algorithms. It was built to be really fast, and it works really well in Linux.  
 > LUKS works by storing a special header in the partition of your permanent storage device (HDD, SSD, etc) to configure it's parameters. For more information about LUKS, check the [Wikipedia article](https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup) and the [Arch Wiki](https://wiki.archlinux.org/index.php/Dm-crypt).  
->As LUKS is a complex system that requires a bunch of commands to work properly, scripts were created to make life easier :D . They automate the tasks required to create and use LUKS inside a file that works as a container. In other words, this file works as a physical device connected to your computer, that uses cryptography to protect it's data.  
-> The script does all the hard work for you:  
-> - Create the file in your permanent storage device  
+>As LUKS is a complex system that requires a bunch of commands to work properly, scripts were created to make life easier :D . They automate the tasks required to create and use LUKS inside a file. This file will then operate as a LUKS container. In other words, this file works as a physical device, with limited storage size, connected to your computer, that uses cryptography to protect it's data.  
+> The scripts do all the hard work for you in order to make this complex system work, as easy as it can get for the final user. In a few words these scripts do the following:  
+> - Create the file in your permanent storage device (if it's not already created))
 > - Set the file to operate as a LUKS device
 > - Map this file into a virtual device
 > - Mount this virtual device with the user provided password.  
 
 > **NOTE:**  
 >  
-> - This script analyses the file to detect any data corruption before mounting.  
+> - This script analyses the file to detect any data corruption before mounting. If any errors are found, the script will try to fix them. If the fix is not possible, it warns the user about the problem. 
 > - **This script DOES NOT STORE ANY PASSWORD. It means that if you lose your password, you'll lose all the data that is stored inside the file container.**
 
-These scripts are used to open, close and create LUKS container files.  To be able to use them, you will need to run the command below to install them in your system:
+These scripts are used to open, close and create LUKS container files. To be able to use them, you will need to run the command below to install them in your system:
 
 ```Shell
 cd luks
@@ -127,6 +127,42 @@ sudo ./install.sh
 
 > They mount and unmount the CDs respectively. For more info, use the argument --help with them.  
 
+
+### ffmpeg - Script that makes ffmpeg transcoding easier
+
+This script makes transcoding into common codecs and containers easier. It also applies some filters to improve image / audio quality. To install this script, run the following:
+
+```Shell
+cd ffmpeg
+sudo ./install.sh
+```
+
+> **Note:**  
+>  
+> After executing this command, you'll have 4 new scripts installed inside your system:
+> - _mp3_encode_  
+> - _vp9_encode_  
+> - _x264_encode_  
+> - _x265_encode_  
+
+> They transcode multimedia files into their respective containers (see the scripts names for the destination container). For more info, use the argument --help with them.
+
+### ntfs - Script that makes NTFS filesystem mounting less troublesome
+
+Linux may have issues mounting NTFS filesystems, either because they were hibernated or have any type of corruption. If this happens, the system boot is interrupted as /etc/fstab could not mount it's mountpoints. To deal with this without causing boot issues to the Linux system (making Dual Booting with Windows easier), this script was created. To install this script, run the following:
+
+```Shell
+cd ntfs
+sudo ./install.sh
+```
+
+> **Note:**  
+>  
+> After executing this command, the file /etc/ntfs_to_mount.conf will be created. This file must contain a list of the devices to be mounted with NTFS upon system boot. To write into this file, follow the syntax below:
+```Shell
+/dev/DEVICE_NAME MOUNTPOINT
+```
+
 --------
 
 Utilities
@@ -137,7 +173,7 @@ This path contain scripts that can be useful in different scenarios. They are us
 | Script | Description |
 | :------- | :---- |
 | drivers.sh | Shows a list of the drivers currently being used in your system |
-| help.sh | Auxiliary used to display help and copywrite statements in this repository. |
+| setautoupdate.sh | Installs an autoupdate script that checks periodically if software updates are needed. If they are, it installs them. **NOTE: It only checks for some non-critical software for updates. So the kernel and other system packages ARE NOT UPDATED AUTOMATICALLY.**. Only the packages contained inside /etc/autoupdate are updated. When the update is completed, the log file /var/log/autoupdate.log is generated. |
 | list_installed.sh | Dumps the installed packages and repositories of the system into two files: _installed.packages_, _installed.repositories_. |
 | suse_version.sh | Script that returns the openSUSE version of the system. Used throughout the repository for OS version probing. |
 
@@ -166,56 +202,39 @@ When executed, these scripts will do the following:
 | Fritzing | CAD software for prototyping eletronic projects |
 | Google Chrome | Google's Closed-source Web Browser |
 | GRUB2 | Linux GRUB2 Boot loader installer script (it does a re-installation of the boot loader back into the system) |
-| PyCharm | Python IDE |
+| LaTeX | A editing system that works by commands instead of graphical interfaces provided by software like LibreOffice and MS Office Word |
 | SMPlayer | Video player (configured to avoid common memory leaks that it could cause) |
+| Tuned | A daemon to tune the system dinamically as it is required |
+| Unbound | One of the best and fastest DNS Caching Server available |
 | Unison | Syncing software that allows you to sync in both directions REALLY fast |
 | VirtualBox | Oracle's Hardware Virtualization Technology |
 | VLC | Video player (configured to avoid common memory leaks that it could cause) |
 
-### General Scripts
-Some softwares don't have an **openSUSE**&trade; repository already setup. As a workaround, scripts have been created to automate the installation procedure. They execute the following:
-- Parse the required information from the software vendor's website
-- Detects if the software is installed and needs an update
-- If the software was not installed, then install it and perform the configuration steps
-
-> **Files in These Scripts**: <br>
-> 1. **DESKTOP** file (to install the required links into the Graphical Desktop Interface) <i>**(some softwares might not have this file in their path inside this repository. In this cases, the vendor's have created a .RPM package, that already has this file and handles most of the hard work of installing the software for us)**</i><br>
-> 2. **update.sh** bash script (this script keep the software updated, and if the software is not present in the system, it installs and configures it)<br>
-> 3. **install.sh** bash script (it installs the **DESKTOP** file, if needed, and also schedule the update file with **cron** to run once per week, keeping the software updated)
-
-| Software | Description |
-| ------- | ------ |
-| TeamViewer | A Remote Access software that can bypass NAT and port forwarding. It can even configure itself inside the system's default firewall. |
-| <abbr title="Universal Media Server">UMS</abbr> | UPNP / DLNA Streaming  server that can do on-the-fly transcoding and motion frame interpolation |
-
-<hr>
-
 Workarounds
 -----------------
 
-Linux is good, but as many OS's out there, it has it's own problems. To solve those issues, scripts have been created to automate these fixes.
+Linux is great, but as many OS's out there, it has it's own problems and performance issues. To solve those issues, scripts have been created to automate these fixes.
 
 > **Note:**  
 >
-> - Although these scripts work well, they're **workarounds**. Therefore, they're far from being <i>perfect solutions</i>. They're provided AS-IS with NO WARRANTY whatsoever.
+> - Although these scripts work well in a desktop on a daily-basis, most of them are **workarounds**. Therefore, they're far from being <i>perfect solutions</i>. They're provided AS-IS with NO WARRANTY whatsoever.
 
 | Name | Description |
 | ------- | ------ |
+| Block Touchscreen | Disables touchscreen in laptops or similar devices |
+| Bluetooth RFKILL Unlock | Enables bluetooth driver by unlocking the RFKILL functionality. Some motherboards have this issue, but it seems this problem has been fixed in Kernel >= 4 . |
 | Mouse Fast Scroll - Microsoft | Fixes the fast scroll that happens with the Microsoft's driver for their Optical (Wire or Wireless) Mouses |
 | [NVIDIA Optimus&trade;][optimus] | Install Bumblebee software to enable fast switch between Onboard and NVIDIA&trade; GPU's. Very used for Laptops to spare energy when the robust GPU is not needed. Before using this feature, please check if your card is supported [here](http://www.geforce.com/hardware/technology/optimus/supported-gpus). |
+| Performance Tuning | Improve Linux general performance (CPU, Memory IO, Disk IO, Network, etc), by applying a bunch of different techniques and patches to critical system sections. Theses scripts work by changing the Modifying Power Management as the system power is changed (AC power connected in the Laptop, or Laptop running with a battery, or a Desktop that always runs with AC power), Kernel Sysctl Variables, Reduce Non-Real Time Daemons Priorities, Modifying modules options to increase responsivity and throughout.  |
 | Suspend | Avoid suspension / hibernation problems related to either not being able to suspend / hibernate or not being able to wake up from these energy modes. **This is a common issue with systems that have at least one NVIDIA GPU.** |
-| Auto Update System | Updates the system periodically and automatically, with human intervention only required for certain softwares (Kernel, and some system low level packages) |
-| Block Touchscreen | Blocks the touchscreen driver permanently |
-| Bluetooth RFKILL Unlock | Enables bluetooth driver by unlocking the RFKILL functionality. Some motherboards have this issue, but it seems this problem has been fixed in Kernel >= 4 . |
 | VPN Kernel Allow | Enables PPTP VPN functionality on Kernels >=3.4 during boot (it does some _modprobe's_ on boot time). |
-| WiFi Performance | Improves WiFi Performance by applying some changes to the system WLAN drivers on boot. |
 
 <hr>
 
 Tested Environment
 -----------------
 
-The scripts provided were tested in a x86_64 machine running openSUSE&trade; Leap 42.2 and the most recent kernel available within the default openSUSE&trade; repositories
+The scripts provided were tested in a x86_64 machine running openSUSE&trade; Leap 42.3 and the most recent kernel available within the default openSUSE&trade; repositories and kernel stable openSUSE&trade; repository.
 
 Footnotes
 ------------------
